@@ -8,4 +8,6 @@ private:
 
 public:
     Material(const glm::vec4 &color);
+
+    const glm::vec4 &getColor();
 };

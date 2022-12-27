@@ -6,8 +6,8 @@
 #include <glm/gtx/string_cast.hpp>
 
 
-Entity::Entity(const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::vec4 color)
-        : position(position), rotation(rotation), scale(scale), material(color) {
+Entity::Entity(const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::vec4 color, const GLuint &UBO_BP, glm::vec3 altPosition, glm::vec3 altRotation)
+        : position(position), rotation(rotation), scale(scale), color(color), UBO_BP(UBO_BP), keyframe1Position(position), keyframe1Rotation(rotation), keyframe2Position(altPosition), keyframe2Rotation(altRotation) {
     mesh = new mgl::Mesh();
     mesh->joinIdenticalVertices();
     mesh->create(meshFilePath, color);
@@ -52,6 +52,7 @@ void Entity::createShaderPrograms() {
     shaders->addShader(GL_FRAGMENT_SHADER, "resources/shaders/cube-fs.glsl");
 
     shaders->addAttribute(mgl::POSITION_ATTRIBUTE, mgl::Mesh::POSITION);
+    shaders->addAttribute(mgl::MATERIAL_ATTRIBUTE, mgl::Mesh::COLOR);
     if (getMesh().hasNormals()) {
         shaders->addAttribute(mgl::NORMAL_ATTRIBUTE, mgl::Mesh::NORMAL);
     }
@@ -63,9 +64,24 @@ void Entity::createShaderPrograms() {
     }
 
     shaders->addUniform(mgl::MODEL_MATRIX);
-    shaders->addUniformBlock(mgl::CAMERA_BLOCK, mgl::CAMERA_BLOCK_BINDING_POINT);
-    shaders->addUniformBlock(mgl::MATERIAL_BLOCK, mgl::CAMERA_BLOCK_BINDING_POINT);
+    shaders->addUniformBlock(mgl::CAMERA_BLOCK, UBO_BP);
     shaders->create();
 
     modelMatrixID = shaders->Uniforms[mgl::MODEL_MATRIX].index;
+}
+
+glm::vec3 Entity::getStartPosition() {
+    return keyframe1Position;
+}
+
+glm::vec3 Entity::getStartRotation() {
+    return keyframe1Rotation;
+}
+
+glm::vec3 Entity::getEndPosition() {
+    return keyframe2Position;
+}
+
+glm::vec3 Entity::getEndRotation() {
+    return keyframe2Rotation;
 }

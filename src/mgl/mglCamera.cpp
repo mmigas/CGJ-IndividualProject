@@ -9,11 +9,10 @@ namespace mgl {
 
 ///////////////////////////////////////////////////////////////////////// Camera
 
-    Camera::Camera(int width, int height, glm::vec3 eye, glm::vec3 lookat, glm::vec3 up)
-            : ViewMatrix(glm::mat4(1.0f)), ProjectionMatrix(glm::mat4(1.0f)), width(width), height(height), m_eye(eye), m_lookAt(lookat), m_upVector(up) {
+    Camera::Camera(int width, int height,GLuint UboId, glm::vec3 eye, glm::vec3 lookat, glm::vec3 up)
+            : UboId(UboId),ViewMatrix(glm::mat4(1.0f)), ProjectionMatrix(glm::mat4(1.0f)), width(width), height(height), m_eye(eye), m_lookAt(lookat), m_upVector(up) {
         aspectRatio = (float) width / (float) height;
-        updateProjectionMatrix();
-        updateViewMatrix();
+        updateMatrices();
     }
 
     Camera::~Camera() {
@@ -51,7 +50,7 @@ namespace mgl {
 
     void Camera::updateViewMatrix() {
         ViewMatrix = glm::lookAt(m_eye, m_lookAt, m_upVector);
-        glBindBuffer(GL_UNIFORM_BUFFER, mgl::CAMERA_BLOCK_BINDING_POINT);
+        glBindBuffer(GL_UNIFORM_BUFFER, UboId);
         glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(ViewMatrix));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
@@ -62,7 +61,7 @@ namespace mgl {
         } else {
             ProjectionMatrix = glm::perspective<float>(glm::radians(FoV), aspectRatio, 0.1f, 20.0f);
         }
-        glBindBuffer(GL_UNIFORM_BUFFER, mgl::CAMERA_BLOCK_BINDING_POINT);
+        glBindBuffer(GL_UNIFORM_BUFFER, UboId);
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(ProjectionMatrix));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }

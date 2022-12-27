@@ -7,6 +7,7 @@
 class Scene {
 private:
 
+    GLuint UboBP = 0;
     std::vector<Entity> entities;
     float frameCounter = 0.0f;
 

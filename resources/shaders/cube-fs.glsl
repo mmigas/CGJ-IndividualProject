@@ -9,6 +9,5 @@ out vec4 FragmentColor;
 
 void main(void)
 {
-    vec4 color = (clamp(abs(vec4(normalize(exNormal), 1.0f)), 0.8f, 1.0f) * exColor);
-    FragmentColor = color;
+    FragmentColor = vec4(1.0f,1.0f,1.0f,1.0f);
 }

@@ -18,6 +18,7 @@ namespace mgl {
 
     class Camera {
     private:
+        GLuint UboId;
         glm::mat4 ViewMatrix;
         glm::mat4 ProjectionMatrix;
 
@@ -34,7 +35,7 @@ namespace mgl {
         bool isOrtho = false;
 
     public:
-        Camera(int width, int height, glm::vec3 eye, glm::vec3 lookat, glm::vec3 up);
+        Camera(int width, int height,GLuint UboId, glm::vec3 eye, glm::vec3 lookat, glm::vec3 up);
 
         ~Camera();
 
