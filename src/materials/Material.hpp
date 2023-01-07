@@ -7,15 +7,19 @@
 class Material {
 private:
     const int id;
-    glm::vec4 color;
+    GLuint UboId;
+    glm::vec3 color;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+    float shininess;
     mgl::ShaderType shaderType;
 
 public:
     mgl::ShaderProgram *shaders;
 
-    Material(int id, const glm::vec4 &color, mgl::ShaderType shaderType);
+    Material(int id, const glm::vec3 &color, mgl::ShaderType shaderType);
 
-    const glm::vec4 &getColor();
+    const glm::vec3 &getColor();
 
     int getID() const;
 

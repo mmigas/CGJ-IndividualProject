@@ -21,14 +21,15 @@ namespace mgl {
     const std::string PROJECTION_MATRIX = "ProjectionMatrix";
     const std::string TEXTURE_MATRIX = "TextureMatrix";
     const std::string CAMERA_BLOCK = "Camera";
+    const std::string MATERIAL_BLOCK = "Material";
     const int CAMERA_BLOCK_BINDING_POINT = 1;
+    const int MATERIAL_BLOCK_BINDING_POINT = 2;
 
     const std::string POSITION_ATTRIBUTE = "inPosition";
     const std::string NORMAL_ATTRIBUTE = "inNormal";
     const std::string TEXCOORD_ATTRIBUTE = "inTexcoord";
     const std::string TANGENT_ATTRIBUTE = "inTangent";
     const std::string BITANGENT_ATTRIBUTE = "inBitangent";
-    const std::string MATERIAL_ATTRIBUTE = "inColor";
 
     enum ShaderType {
         unlit, standard

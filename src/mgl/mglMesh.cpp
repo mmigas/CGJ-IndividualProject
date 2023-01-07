@@ -65,11 +65,9 @@ namespace mgl {
         NormalsLoaded = mesh->HasNormals();
         TexcoordsLoaded = mesh->HasTextureCoords(0);
         TangentsAndBitangentsLoaded = mesh->HasTangentsAndBitangents();
-        Material *material = MaterialsLibrary::getInstance().getMaterial(materialID);
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
             const aiVector3D &aiPosition = mesh->mVertices[i];
             Positions.emplace_back(aiPosition.x, aiPosition.y, aiPosition.z);
-            colors.emplace_back(material->getColor());
             if (NormalsLoaded) {
                 const aiVector3D &aiNormal = mesh->mNormals[i];
                 Normals.push_back(glm::vec3(aiNormal.x, aiNormal.y, aiNormal.z));
@@ -151,11 +149,6 @@ namespace mgl {
             glBufferData(GL_ARRAY_BUFFER, sizeof(Positions[0]) * Positions.size(), &Positions[0], GL_STATIC_DRAW);
             glEnableVertexAttribArray(POSITION);
             glVertexAttribPointer(POSITION, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-            glBindBuffer(GL_ARRAY_BUFFER, boId[COLOR]);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(colors[0]) * colors.size(), &colors[0], GL_STATIC_DRAW);
-            glEnableVertexAttribArray(COLOR);
-            glVertexAttribPointer(COLOR, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
             if (NormalsLoaded) {
                 glBindBuffer(GL_ARRAY_BUFFER, boId[NORMAL]);

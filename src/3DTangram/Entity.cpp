@@ -4,8 +4,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
-#include <glm/gtx/string_cast.hpp>
-
 
 Entity::Entity(const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int materialID)
         : position(position), rotation(rotation), scale(scale), materialID(materialID) {
@@ -50,11 +48,10 @@ mgl::Mesh &Entity::getMesh() {
 
 void Entity::createShaderPrograms() {
     mgl::ShaderProgram *shaders = new mgl::ShaderProgram();
-    shaders->addShader(GL_VERTEX_SHADER, "resources/shaders/unlit-vs.glsl");
-    shaders->addShader(GL_FRAGMENT_SHADER, "resources/shaders/unlit-fs.glsl");
+    shaders->addShader(GL_VERTEX_SHADER, "resources/shaders/light-vs.glsl");
+    shaders->addShader(GL_FRAGMENT_SHADER, "resources/shaders/light-fs.glsl");
 
     shaders->addAttribute(mgl::POSITION_ATTRIBUTE, mgl::Mesh::POSITION);
-    shaders->addAttribute(mgl::MATERIAL_ATTRIBUTE, mgl::Mesh::COLOR);
     if (getMesh().hasNormals()) {
         shaders->addAttribute(mgl::NORMAL_ATTRIBUTE, mgl::Mesh::NORMAL);
     }
@@ -67,6 +64,7 @@ void Entity::createShaderPrograms() {
 
     shaders->addUniform(mgl::MODEL_MATRIX);
     shaders->addUniformBlock(mgl::CAMERA_BLOCK, mgl::CAMERA_BLOCK_BINDING_POINT);
+    shaders->addUniformBlock(mgl::MATERIAL_BLOCK, mgl::MATERIAL_BLOCK_BINDING_POINT);
     shaders->create();
 
     modelMatrixID = shaders->Uniforms[mgl::MODEL_MATRIX].index;
