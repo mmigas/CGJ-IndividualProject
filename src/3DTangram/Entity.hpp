@@ -2,28 +2,22 @@
 
 #include "../mgl/mglMesh.hpp"
 #include "../mgl/mgl.hpp"
+#include "../materials/Material.hpp"
 
 class Entity {
 private:
-    mgl::Mesh* mesh;
+    mgl::Mesh *mesh;
     glm::vec3 position;
     glm::vec3 rotation;
     glm::vec3 scale;
-    glm::vec4 color;
-    glm::vec3 keyframe1Position;
-    glm::vec3 keyframe1Rotation;
-    glm::vec3 keyframe2Position;
-    glm::vec3 keyframe2Rotation;
-
-    mgl::ShaderProgram *shaders;
-
+    int materialID;
+    Material *material;
     GLint modelMatrixID;
     glm::mat4 modelMatrix{1};
-    const GLuint &UBO_BP;
 
 public:
 
-    Entity(const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::vec4 color, const GLuint &UBO_BP, glm::vec3 altPosition, glm::vec3 altRotation);
+    Entity(const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int materialID);
 
     void move(glm::vec3 position);
 
@@ -39,12 +33,7 @@ public:
 
     mgl::Mesh &getMesh();
 
-    glm::vec3 getStartPosition();
+    glm::vec3 getPosition();
 
-    glm::vec3 getStartRotation();
-
-    glm::vec3 getEndPosition();
-
-    glm::vec3 getEndRotation();
-
+    glm::vec3 getRotation();
 };

@@ -63,7 +63,7 @@ namespace mgl {
 
         void flipUVs();
 
-        void create(const std::string &filename, const glm::vec4 &color);
+        void create(const std::string &filename, int materialID);
 
         void draw() override;
 
@@ -92,9 +92,9 @@ namespace mgl {
         std::vector<unsigned int> Indices;
         std::vector<glm::vec4> colors;
 
-        void processScene(const aiScene *scene, const glm::vec4 &color);
+        void processScene(const aiScene *scene, int materialID);
 
-        void processMesh(const aiMesh *mesh, const glm::vec4 &color);
+        void processMesh(const aiMesh *mesh, int materialID);
 
         void createBufferObjects();
 

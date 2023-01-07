@@ -6,16 +6,22 @@
 
 class Scene {
 private:
-
-    GLuint UboBP = 0;
     std::vector<Entity> entities;
-    float frameCounter = 0.0f;
-
+    mgl::Camera *camera;
 public:
 
-    void buildTangram();
+    Scene();
 
-    void updatePieces(int direction);
+    void init(mgl::Camera *camera);
+
+    void createEntity(const std::string &meshFile, int materialID);
+
+    void createEntity(const std::string &meshFile, int materialID, glm::vec3 position);
+
+    void createEntity(const std::string &meshFile, int materialID, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 
     void drawScene();
+
+    mgl::Camera *getCamera();
+
 };

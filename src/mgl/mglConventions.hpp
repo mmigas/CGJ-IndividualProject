@@ -28,7 +28,11 @@ namespace mgl {
     const std::string TEXCOORD_ATTRIBUTE = "inTexcoord";
     const std::string TANGENT_ATTRIBUTE = "inTangent";
     const std::string BITANGENT_ATTRIBUTE = "inBitangent";
-    const std::string MATERIAL_ATTRIBUTE = "inMaterial";
+    const std::string MATERIAL_ATTRIBUTE = "inColor";
+
+    enum ShaderType {
+        unlit, standard
+    };
 
 ////////////////////////////////////////////////////////////////////////////////
 } // namespace mgl

@@ -1,16 +1,18 @@
 #include "Entity.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "../materials/MaterialsLibrary.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/string_cast.hpp>
 
 
-Entity::Entity(const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, glm::vec4 color, const GLuint &UBO_BP, glm::vec3 altPosition, glm::vec3 altRotation)
-        : position(position), rotation(rotation), scale(scale), color(color), UBO_BP(UBO_BP), keyframe1Position(position), keyframe1Rotation(rotation), keyframe2Position(altPosition), keyframe2Rotation(altRotation) {
+Entity::Entity(const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int materialID)
+        : position(position), rotation(rotation), scale(scale), materialID(materialID) {
     mesh = new mgl::Mesh();
     mesh->joinIdenticalVertices();
-    mesh->create(meshFilePath, color);
+    mesh->create(meshFilePath, materialID);
+    material = MaterialsLibrary::getInstance().getMaterial(materialID);
     createShaderPrograms();
 }
 
@@ -35,10 +37,10 @@ glm::mat4 Entity::getModelMatrix() {
 
 void Entity::draw() {
     if (mesh->initialized) {
-        shaders->bind();
+        material->bind();
         glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, glm::value_ptr(getModelMatrix()));
         mesh->draw();
-        shaders->unbind();
+        material->unbind();
     }
 }
 
@@ -47,9 +49,9 @@ mgl::Mesh &Entity::getMesh() {
 }
 
 void Entity::createShaderPrograms() {
-    shaders = new mgl::ShaderProgram();
-    shaders->addShader(GL_VERTEX_SHADER, "resources/shaders/cube-vs.glsl");
-    shaders->addShader(GL_FRAGMENT_SHADER, "resources/shaders/cube-fs.glsl");
+    mgl::ShaderProgram *shaders = new mgl::ShaderProgram();
+    shaders->addShader(GL_VERTEX_SHADER, "resources/shaders/unlit-vs.glsl");
+    shaders->addShader(GL_FRAGMENT_SHADER, "resources/shaders/unlit-fs.glsl");
 
     shaders->addAttribute(mgl::POSITION_ATTRIBUTE, mgl::Mesh::POSITION);
     shaders->addAttribute(mgl::MATERIAL_ATTRIBUTE, mgl::Mesh::COLOR);
@@ -64,24 +66,17 @@ void Entity::createShaderPrograms() {
     }
 
     shaders->addUniform(mgl::MODEL_MATRIX);
-    shaders->addUniformBlock(mgl::CAMERA_BLOCK, UBO_BP);
+    shaders->addUniformBlock(mgl::CAMERA_BLOCK, mgl::CAMERA_BLOCK_BINDING_POINT);
     shaders->create();
 
     modelMatrixID = shaders->Uniforms[mgl::MODEL_MATRIX].index;
+    material->shaders = shaders;
 }
 
-glm::vec3 Entity::getStartPosition() {
-    return keyframe1Position;
+glm::vec3 Entity::getPosition() {
+    return position;
 }
 
-glm::vec3 Entity::getStartRotation() {
-    return keyframe1Rotation;
-}
-
-glm::vec3 Entity::getEndPosition() {
-    return keyframe2Position;
-}
-
-glm::vec3 Entity::getEndRotation() {
-    return keyframe2Rotation;
+glm::vec3 Entity::getRotation() {
+    return rotation;
 }

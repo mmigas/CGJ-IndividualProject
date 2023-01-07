@@ -1,21 +1,26 @@
 #include <filesystem>
 #include "Scene.hpp"
 
-void Scene::buildTangram() {
-    std::string modelsPath = std::filesystem::current_path().string() + "/resources/models/";
-    std::string meshFile = "RedSquare.obj"; //Parallelogram
-    std::string meshFullname = modelsPath + meshFile;
-    entities.emplace_back(meshFullname, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), UboBP, glm::vec3(-1.4f, 6.55f, -0.3f), glm::vec3(90.0f, 0.0f, 0.0f));
+Scene::Scene() {
 }
 
-void Scene::updatePieces(int direction) {
-    frameCounter = frameCounter + (direction * .006);
-    if (frameCounter > 1.0f) frameCounter = 1.0f;
-    if (frameCounter < 0.0f) frameCounter = 0.0f;
-    for (Entity& entity : entities) {
-        entity.move(mix(entity.getStartPosition(), entity.getEndPosition(), frameCounter));
-        entity.rotate(mix(entity.getStartRotation(), entity.getEndRotation(), frameCounter));
-    }
+
+void Scene::init(mgl::Camera *camera) {
+    this->camera = camera;
+}
+
+void Scene::createEntity(const std::string &meshFile, int materialID) {
+    createEntity(meshFile, materialID, glm::vec3(0), glm::vec3(0), glm::vec3(1));
+}
+
+void Scene::createEntity(const std::string &meshFile, int materialID, glm::vec3 position) {
+    createEntity(meshFile, materialID, position, glm::vec3(0), glm::vec3(1));
+}
+
+void Scene::createEntity(const std::string &meshFile, int materialID, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
+    std::string modelsPath = std::filesystem::current_path().string() + "/resources/models/";
+    std::string meshFullname = modelsPath + meshFile;
+    entities.emplace_back(meshFullname, position, rotation, scale, materialID);
 }
 
 void Scene::drawScene() {
@@ -23,3 +28,11 @@ void Scene::drawScene() {
         entity.draw();
     }
 }
+
+
+mgl::Camera *Scene::getCamera() {
+    return camera;
+}
+
+
+

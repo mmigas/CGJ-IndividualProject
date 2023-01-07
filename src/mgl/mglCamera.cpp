@@ -1,17 +1,18 @@
 #include <glm/gtc/type_ptr.hpp>
-#include <algorithm>
-#include <iostream>
 
 #include "mglCamera.hpp"
 #include "mglConventions.hpp"
 
 namespace mgl {
 
-///////////////////////////////////////////////////////////////////////// Camera
-
-    Camera::Camera(int width, int height,GLuint UboId, glm::vec3 eye, glm::vec3 lookat, glm::vec3 up)
-            : UboId(UboId),ViewMatrix(glm::mat4(1.0f)), ProjectionMatrix(glm::mat4(1.0f)), width(width), height(height), m_eye(eye), m_lookAt(lookat), m_upVector(up) {
+    Camera::Camera(int width, int height, glm::vec3 eye, glm::vec3 lookat, glm::vec3 up)
+            : ViewMatrix(glm::mat4(1.0f)), ProjectionMatrix(glm::mat4(1.0f)), width(width), height(height), m_eye(eye), m_lookAt(lookat), m_upVector(up) {
         aspectRatio = (float) width / (float) height;
+        glGenBuffers(1, &UboId);
+        glBindBuffer(GL_UNIFORM_BUFFER, UboId);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 2, nullptr, GL_STREAM_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, CAMERA_BLOCK_BINDING_POINT, UboId);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
         updateMatrices();
     }
 
@@ -97,7 +98,11 @@ namespace mgl {
     void Camera::resize(int width, int height) {
         this->width = width;
         this->height = height;
-        aspectRatio = (float) width / (float) height;
+        if (width == 0 || height == 0) {
+            aspectRatio = 0;
+        } else {
+            aspectRatio = (float) width / (float) height;
+        }
         updateProjectionMatrix();
     }
 

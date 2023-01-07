@@ -13,7 +13,6 @@ add_definitions(-DDEBUG)
 # Include the OpenGL Package
 set(OpenGL_GL_PREFERENCE LEGACY)
 find_package(OpenGL REQUIRED)
-find_package(GLEW COMPONENTS REQUIRED)
 ###############################
 # RPATH correct path for libs
 set(CMAKE_INSTALL_RPATH "lib")
@@ -43,17 +42,17 @@ endif ()
 # The `add_library` allows you to include libraries to your work.
 # The IMPORTED parameter defines the library as an external inclusion
 # The SHARED parameter defines the library as a dynamic library (.dll)
-#add_library(GLEW SHARED IMPORTED)
+add_library(GLEW SHARED IMPORTED)
 add_library(GLFW SHARED IMPORTED)
 add_library(Assimp SHARED IMPORTED)
 # ... add other libs ...
 
 if (WIN32) # WINDOWS
     # Tell CMake where to find the `.dll` and `.lib` file of the library
-#    set_target_properties(GLEW PROPERTIES
-#            IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLEW/bin/Release/x64/glew32.dll
-#            IMPORTED_IMPLIB ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLEW/lib/Release/x64/glew32.lib
-#            )
+    set_target_properties(GLEW PROPERTIES
+            IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLEW/bin/Release/x64/glew32.dll
+            IMPORTED_IMPLIB ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLEW/lib/Release/x64/glew32.lib
+            )
 
     set_target_properties(GLFW PROPERTIES
             IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLFW/lib-vc2022/glfw3.dll
@@ -73,7 +72,7 @@ endif ()
 # To make it easier, we can create a variable holding all needed lib dependencies
 set(GRAPHIC_LIBRARIES
         GLFW
-        GLEW::GLEW
+        GLEW
         Assimp
         ${OPENGL_LIBS}
         )
@@ -96,14 +95,15 @@ add_executable(${PROJECT_NAME} src/mgl/mgl.hpp
         src/3DTangram/Entity.hpp
         src/3DTangram/Scene.cpp
         src/3DTangram/Scene.hpp
-        src/3DTangram/Material.cpp
-        src/3DTangram/Material.hpp
-        )
+        src/materials/Material.cpp
+        src/materials/Material.hpp
+        src/materials/MaterialsLibrary.cpp
+        src/materials/MaterialsLibrary.hpp)
 
 include_directories(
         ${OPENGL_INCLUDE_DIRS}
         # Include the `.h` files into your code.
-        #${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLEW/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLEW/include
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLFW/include
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glm/include
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/Assimp/include

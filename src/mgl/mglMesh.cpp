@@ -1,4 +1,6 @@
 #include "mglMesh.hpp"
+#include "../materials/Material.hpp"
+#include "../materials/MaterialsLibrary.hpp"
 
 namespace mgl {
 
@@ -58,16 +60,16 @@ namespace mgl {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-    void Mesh::processMesh(const aiMesh *mesh, const glm::vec4 &color) {
+    void Mesh::processMesh(const aiMesh *mesh, const int materialID) {
 
         NormalsLoaded = mesh->HasNormals();
         TexcoordsLoaded = mesh->HasTextureCoords(0);
         TangentsAndBitangentsLoaded = mesh->HasTangentsAndBitangents();
-
+        Material *material = MaterialsLibrary::getInstance().getMaterial(materialID);
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
             const aiVector3D &aiPosition = mesh->mVertices[i];
-            Positions.push_back(glm::vec3(aiPosition.x, aiPosition.y, aiPosition.z));
-            colors.push_back(glm::vec4(color));
+            Positions.emplace_back(aiPosition.x, aiPosition.y, aiPosition.z);
+            colors.emplace_back(material->getColor());
             if (NormalsLoaded) {
                 const aiVector3D &aiNormal = mesh->mNormals[i];
                 Normals.push_back(glm::vec3(aiNormal.x, aiNormal.y, aiNormal.z));
@@ -89,7 +91,7 @@ namespace mgl {
         }
     }
 
-    void Mesh::processScene(const aiScene *scene, const glm::vec4 &color) {
+    void Mesh::processScene(const aiScene *scene, const int materialID) {
 
         Meshes.resize(scene->mNumMeshes);
         unsigned int n_vertices = 0;
@@ -108,7 +110,7 @@ namespace mgl {
         Indices.reserve(n_indices);
 
         for (unsigned int i = 0; i < Meshes.size(); i++) {
-            processMesh(scene->mMeshes[i], color);
+            processMesh(scene->mMeshes[i], materialID);
         }
 
 #ifdef DEBUG
@@ -118,7 +120,7 @@ namespace mgl {
 #endif
     }
 
-    void Mesh::create(const std::string &filename, const glm::vec4 &color) {
+    void Mesh::create(const std::string &filename, int materialID) {
         Assimp::Importer importer;
         const aiScene *scene = importer.ReadFile(filename, AssimpFlags);
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
@@ -132,7 +134,7 @@ namespace mgl {
         std::cout << "Processing [" << filename << "]" << std::endl;
 #endif
 
-        processScene(scene, color);
+        processScene(scene, materialID);
         createBufferObjects();
         initialized = true;
     }
@@ -146,44 +148,38 @@ namespace mgl {
             glGenBuffers(6, boId);
 
             glBindBuffer(GL_ARRAY_BUFFER, boId[POSITION]);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(Positions[0]) * Positions.size(),
-                         &Positions[0], GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(Positions[0]) * Positions.size(), &Positions[0], GL_STATIC_DRAW);
             glEnableVertexAttribArray(POSITION);
             glVertexAttribPointer(POSITION, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
             glBindBuffer(GL_ARRAY_BUFFER, boId[COLOR]);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(colors[0]) * colors.size(),
-                         &colors[0], GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(colors[0]) * colors.size(), &colors[0], GL_STATIC_DRAW);
             glEnableVertexAttribArray(COLOR);
             glVertexAttribPointer(COLOR, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
             if (NormalsLoaded) {
                 glBindBuffer(GL_ARRAY_BUFFER, boId[NORMAL]);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(Normals[0]) * Normals.size(),
-                             &Normals[0], GL_STATIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(Normals[0]) * Normals.size(), &Normals[0], GL_STATIC_DRAW);
                 glEnableVertexAttribArray(NORMAL);
                 glVertexAttribPointer(NORMAL, 3, GL_FLOAT, GL_FALSE, 0, 0);
             }
 
             if (TexcoordsLoaded) {
                 glBindBuffer(GL_ARRAY_BUFFER, boId[TEXCOORD]);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(Texcoords[0]) * Texcoords.size(),
-                             &Texcoords[0], GL_STATIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(Texcoords[0]) * Texcoords.size(), &Texcoords[0], GL_STATIC_DRAW);
                 glEnableVertexAttribArray(TEXCOORD);
                 glVertexAttribPointer(TEXCOORD, 2, GL_FLOAT, GL_FALSE, 0, 0);
             }
 
             if (TangentsAndBitangentsLoaded) {
                 glBindBuffer(GL_ARRAY_BUFFER, boId[TANGENT]);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(Tangents[0]) * Tangents.size(),
-                             &Tangents[0], GL_STATIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(Tangents[0]) * Tangents.size(), &Tangents[0], GL_STATIC_DRAW);
                 glEnableVertexAttribArray(TANGENT);
                 glVertexAttribPointer(TANGENT, 3, GL_FLOAT, GL_FALSE, 0, 0);
             }
 
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, boId[INDEX]);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices[0]) * Indices.size(),
-                         &Indices[0], GL_STATIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices[0]) * Indices.size(), &Indices[0], GL_STATIC_DRAW);
         }
         glBindVertexArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
