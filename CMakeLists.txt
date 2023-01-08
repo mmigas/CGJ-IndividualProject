@@ -90,15 +90,18 @@ add_executable(${PROJECT_NAME} src/mgl/mgl.hpp
         src/mgl/mglMesh.hpp
         src/mgl/mglShader.cpp
         src/mgl/mglShader.hpp
-        src/3DTangram/3DTangram.cpp
-        src/3DTangram/Entity.cpp
-        src/3DTangram/Entity.hpp
-        src/3DTangram/Scene.cpp
-        src/3DTangram/Scene.hpp
+        src/App/Application.cpp
+        src/App/Scene.cpp
+        src/App/Scene.hpp
+        src/Entities/Object.cpp
+        src/Entities/Object.hpp
         src/materials/Material.cpp
         src/materials/Material.hpp
         src/materials/MaterialsLibrary.cpp
-        src/materials/MaterialsLibrary.hpp)
+        src/materials/MaterialsLibrary.hpp
+        src/light/Light.cpp
+        src/light/Light.hpp
+        src/Entities/Entity.cpp src/Entities/Entity.hpp src/App/Renderer.cpp src/App/Renderer.hpp)
 
 include_directories(
         ${OPENGL_INCLUDE_DIRS}

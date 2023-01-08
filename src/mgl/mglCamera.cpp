@@ -67,6 +67,10 @@ namespace mgl {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
+    void Camera::bind() {
+
+    }
+
     glm::vec3 Camera::GetEye() const {
         return m_eye;
     }
@@ -105,6 +109,7 @@ namespace mgl {
         }
         updateProjectionMatrix();
     }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 } // namespace mgl

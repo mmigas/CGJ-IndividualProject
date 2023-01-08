@@ -15,8 +15,7 @@ uniform Camera {
     mat4 ProjectionMatrix;
 };
 
-void main(void)
-{
+void main(void) {
     exPosition = inPosition;
     exTexcoord = inTexcoord;
     exNormal = inNormal;

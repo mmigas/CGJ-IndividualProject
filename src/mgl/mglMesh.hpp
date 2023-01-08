@@ -90,7 +90,6 @@ namespace mgl {
         std::vector<glm::vec2> Texcoords;
         std::vector<glm::vec3> Tangents;
         std::vector<unsigned int> Indices;
-        std::vector<glm::vec4> colors;
 
         void processScene(const aiScene *scene, int materialID);
 

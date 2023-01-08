@@ -1,16 +1,17 @@
 #pragma once
 
-#include "Entity.hpp"
+#include "../Entities/Object.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "../light/Light.hpp"
 
 class Scene {
 private:
-    std::vector<Entity> entities;
+    std::vector<Object> objects;
     mgl::Camera *camera;
+    std::shared_ptr<Light> light;
+    static Scene instance;
 public:
-
-    Scene();
 
     void init(mgl::Camera *camera);
 
@@ -20,8 +21,14 @@ public:
 
     void createEntity(const std::string &meshFile, int materialID, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 
-    void drawScene();
+    void createLight(glm::vec3 position, glm::vec3 color, float intensity);
 
     mgl::Camera *getCamera();
+
+    std::vector<Object> &getObject();
+
+    static Scene &getInstance();
+
+    std::shared_ptr<Light> getLight();
 
 };

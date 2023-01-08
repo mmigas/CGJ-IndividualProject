@@ -16,11 +16,12 @@ private:
 
 public:
 
-    void createMaterial(const std::string &name, glm::vec4 color, mgl::ShaderType shaderType);
+    void createMaterial(const std::string &name, glm::vec3 color, glm::vec3 diffuse, glm::vec3 specular, float shininess, mgl::ShaderType shaderType);
 
     int getMaterialID(const std::string &name);
 
     Material *getMaterial(int id);
 
     static MaterialsLibrary &getInstance();
+
 };

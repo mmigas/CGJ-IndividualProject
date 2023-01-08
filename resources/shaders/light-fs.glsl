@@ -4,16 +4,40 @@ in vec3 exPosition;
 in vec2 exTexcoord;
 in vec3 exNormal;
 
+uniform vec3 CameraPosition;
+
 uniform Material {
     vec3 color;
     vec3 diffuse;
-    vec4 specular;
+    vec3 specular;
     float shininess;
-};
+} material;
+
+uniform Light {
+    vec3 position;
+    vec3 color;
+    vec3 diffuse;
+    vec3 specular;
+} light;
 
 out vec4 FragmentColor;
 
-void main(void)
-{
-    FragmentColor = vec4(color, 1.0f);
+void main(void) {
+    // ambient
+    vec3 ambient = light.color * material.color;
+
+    // diffuse
+    vec3 norm = normalize(exNormal);
+    vec3 lightDirection = normalize(light.position - exPosition);
+    float diff = max(dot(norm, lightDirection), 0.0);
+    vec3 diffuse = light.diffuse * (diff * material.diffuse);
+
+    // specular
+    vec3 viewDir = normalize(vec3(0.0f, 0.0f, -8.0f) - exPosition);
+    vec3 reflectDir = reflect(-lightDirection, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = light.specular * (spec * material.specular);
+
+    vec3 result = ambient + diffuse + specular;
+    FragmentColor = vec4(result, 1.0f);
 }

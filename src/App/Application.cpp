@@ -4,12 +4,15 @@
 #include "../mgl/mgl.hpp"
 #include "Scene.hpp"
 #include "../materials/MaterialsLibrary.hpp"
+#include "Renderer.hpp"
 
 ////////////////////////////////////////////////////////////////////////// MYAPP
 
 class MyApp : public mgl::App {
 
 public:
+    MyApp();
+
     void initCallback(GLFWwindow *win) override;
 
     void displayCallback(GLFWwindow *win, double elapsed) override;
@@ -21,7 +24,8 @@ public:
     void scrollCallback(GLFWwindow *win, double xoffset, double yoffset);
 
 private:
-    Scene scene;
+    Scene &scene;
+    Renderer renderer;
 
     void drawScene();
 
@@ -31,7 +35,7 @@ private:
 /////////////////////////////////////////////////////////////////////////// DRAW
 
 void MyApp::drawScene() {
-    scene.drawScene();
+    renderer.drawScene();
 }
 
 ////////////////////////////////////////////////////////////////////// CALLBACKS
@@ -40,9 +44,11 @@ void MyApp::initCallback(GLFWwindow *win) {
     int width, height;
     glfwGetWindowSize(win, &width, &height);
 
-    MaterialsLibrary::getInstance().createMaterial("default", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), mgl::ShaderType::unlit);
-    scene.init(new mgl::Camera(width, height, glm::vec3(0.0f, -8.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-    scene.createEntity("RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("default"));
+    renderer.createShaderPrograms();
+    MaterialsLibrary::getInstance().createMaterial("default", glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.5f, 0.5f), 32.0f, mgl::ShaderType::light);
+    scene.init(new mgl::Camera(width, height, glm::vec3(0.0f, 0.0f, -8.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+    scene.createEntity("RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("default"), glm::vec3(0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f));
+    scene.createLight(glm::vec3(0.0f, 0.0f, -8.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f);
 }
 
 void MyApp::windowSizeCallback(GLFWwindow *win, int winx, int winy) {
@@ -62,6 +68,10 @@ void MyApp::keyCallback(GLFWwindow *window, int key, int scancode, int action, i
 
 void MyApp::scrollCallback(GLFWwindow *win, double xoffset, double yoffset) {
     scene.getCamera()->updateZoom(yoffset);
+}
+
+MyApp::MyApp() : scene(Scene::getInstance()) {
+
 }
 
 /////////////////////////////////////////////////////////////////////////// MAIN

@@ -1,10 +1,6 @@
 #include <filesystem>
 #include "Scene.hpp"
 
-Scene::Scene() {
-}
-
-
 void Scene::init(mgl::Camera *camera) {
     this->camera = camera;
 }
@@ -20,19 +16,28 @@ void Scene::createEntity(const std::string &meshFile, int materialID, glm::vec3 
 void Scene::createEntity(const std::string &meshFile, int materialID, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
     std::string modelsPath = std::filesystem::current_path().string() + "/resources/models/";
     std::string meshFullname = modelsPath + meshFile;
-    entities.emplace_back(meshFullname, position, rotation, scale, materialID);
+    objects.emplace_back(meshFullname, position, rotation, scale, materialID);
 }
 
-void Scene::drawScene() {
-    for (Entity &entity: entities) {
-        entity.draw();
-    }
+void Scene::createLight(glm::vec3 position, glm::vec3 color, float intensity) {
+    light = std::make_shared<Light>(position, color, intensity);
 }
-
 
 mgl::Camera *Scene::getCamera() {
     return camera;
 }
 
+std::vector<Object> &Scene::getObject() {
+    return objects;
+}
 
+Scene &Scene::getInstance() {
+    return instance;
+}
+
+std::shared_ptr<Light> Scene::getLight() {
+    return light;
+}
+
+Scene Scene::instance;
 

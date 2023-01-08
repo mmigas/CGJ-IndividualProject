@@ -1,12 +1,12 @@
-#include "Entity.hpp"
+#include "Object.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "../materials/MaterialsLibrary.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-Entity::Entity(const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int materialID)
-        : position(position), rotation(rotation), scale(scale), materialID(materialID) {
+Object::Object(const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int materialID)
+        : materialID(materialID), Entity(position, rotation, scale) {
     mesh = new mgl::Mesh();
     mesh->joinIdenticalVertices();
     mesh->create(meshFilePath, materialID);
@@ -14,39 +14,25 @@ Entity::Entity(const std::string &meshFilePath, glm::vec3 position, glm::vec3 ro
     createShaderPrograms();
 }
 
-
-void Entity::move(glm::vec3 position) {
-    this->position = position;
-}
-
-void Entity::rotate(glm::vec3 radians) {
-    this->rotation = radians;
-}
-
-void Entity::setScale(glm::vec3 scale) {
-    this->scale = scale;
-}
-
-glm::mat4 Entity::getModelMatrix() {
+glm::mat4 Object::getModelMatrix() {
     return glm::translate(glm::mat4(1), position) *
            glm::toMat4(glm::quat(glm::radians(rotation))) *
            glm::scale(glm::mat4(1), scale);
 }
 
-void Entity::draw() {
+void Object::draw() {
     if (mesh->initialized) {
         material->bind();
         glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, glm::value_ptr(getModelMatrix()));
         mesh->draw();
-        material->unbind();
     }
 }
 
-mgl::Mesh &Entity::getMesh() {
+mgl::Mesh &Object::getMesh() {
     return *mesh;
 }
 
-void Entity::createShaderPrograms() {
+void Object::createShaderPrograms() {
     mgl::ShaderProgram *shaders = new mgl::ShaderProgram();
     shaders->addShader(GL_VERTEX_SHADER, "resources/shaders/light-vs.glsl");
     shaders->addShader(GL_FRAGMENT_SHADER, "resources/shaders/light-fs.glsl");
@@ -71,10 +57,6 @@ void Entity::createShaderPrograms() {
     material->shaders = shaders;
 }
 
-glm::vec3 Entity::getPosition() {
-    return position;
-}
-
-glm::vec3 Entity::getRotation() {
-    return rotation;
+Material *Object::getMaterial() {
+    return material;
 }
