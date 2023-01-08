@@ -23,7 +23,7 @@ void Material::bind() {
     glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), glm::value_ptr(color));
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4), sizeof(glm::vec3), glm::value_ptr(diffuse));
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 2, sizeof(glm::vec3), glm::value_ptr(specular));
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 3, sizeof(float), &shininess);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 2 + sizeof(glm::vec3), sizeof(float), &shininess);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
