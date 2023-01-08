@@ -2,18 +2,31 @@
 
 #include <unordered_map>
 #include "Scene.hpp"
+#include "../textures/SkyBox.hpp"
 
 class Renderer {
 
     Scene &scene;
     std::unordered_map<mgl::ShaderType, std::shared_ptr<mgl::ShaderProgram>> shaderPrograms;
+    SkyBox skybox{};
 public:
     Renderer();
 
+    void init();
+
     void createShaderPrograms();
 
-    void drawScene();
+    void loadSkyBox(const std::string &skyboxFolder);
+
+    void draw();
 
 private:
     void createShaderProgram(mgl::ShaderType, const std::string &vertexShaderPath, const std::string &fragmentShaderPath);
+
+    void createSkyBoxShaderProgram(const std::string &vertexShaderPath, const std::string &fragmentShaderPath);
+
+    void drawScene();
+
+    void drawSkyBox();
+
 };

@@ -39,7 +39,7 @@ namespace mgl {
 
         ~Camera();
 
-        void SetCameraView(glm::vec3 eye, glm::vec3 lookat, glm::vec3 up);
+        void setViewMatrix(glm::mat4 viewMatrix);
 
         void changeMode();
 
@@ -68,6 +68,12 @@ namespace mgl {
         void updateMatrices();
 
         void bind();
+
+        glm::mat4 GetViewMatrix();
+
+        glm::mat4 GetProjectionMatrix();
+
+
     };
 
 ////////////////////////////////////////////////////////////////////////////////

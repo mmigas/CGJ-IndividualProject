@@ -4,9 +4,18 @@ Renderer::Renderer() : scene(Scene::getInstance()) {
 
 }
 
+void Renderer::init() {
+    skybox.init();
+}
+
 void Renderer::createShaderPrograms() {
     createShaderProgram(mgl::ShaderType::unlit, "resources/shaders/unlit-vs.glsl", "resources/shaders/unlit-fs.glsl");
     createShaderProgram(mgl::ShaderType::light, "resources/shaders/light-vs.glsl", "resources/shaders/light-fs.glsl");
+    createSkyBoxShaderProgram("resources/shaders/skybox-vs.glsl", "resources/shaders/skybox-fs.glsl");
+}
+
+void Renderer::loadSkyBox(const std::string &skyboxFolder) {
+    skybox.loadCubeMap(skyboxFolder);
 }
 
 void Renderer::createShaderProgram(mgl::ShaderType shaderType, const std::string &vertexShaderPath, const std::string &fragmentShaderPath) {
@@ -30,6 +39,21 @@ void Renderer::createShaderProgram(mgl::ShaderType shaderType, const std::string
     shaderPrograms.insert(std::make_pair(shaderType, shaders));
 }
 
+void Renderer::createSkyBoxShaderProgram(const std::string &vertexShaderPath, const std::string &fragmentShaderPath) {
+    mgl::ShaderProgram *shaders = new mgl::ShaderProgram();
+    shaders->addShader(GL_VERTEX_SHADER, vertexShaderPath);
+    shaders->addShader(GL_FRAGMENT_SHADER, fragmentShaderPath);
+    shaders->addUniform(mgl::SKYBOX);
+    shaders->addUniformBlock(mgl::CAMERA_BLOCK, mgl::CAMERA_BLOCK_BINDING_POINT);
+    shaders->create();
+    shaderPrograms.insert(std::make_pair(mgl::ShaderType::skybox, shaders));
+}
+
+void Renderer::draw() {
+    drawScene();
+    drawSkyBox();
+}
+
 void Renderer::drawScene() {
     for (Object &object: scene.getObject()) {
         std::shared_ptr<mgl::ShaderProgram> shader = shaderPrograms[object.getMaterial()->getShaderType()];
@@ -43,3 +67,17 @@ void Renderer::drawScene() {
         shader->unbind();
     }
 }
+
+void Renderer::drawSkyBox() {
+    glDepthFunc(GL_LEQUAL);
+    std::shared_ptr<mgl::ShaderProgram> shader = shaderPrograms[mgl::ShaderType::skybox];
+    glm::mat4 viewMatrixBackUp = Scene::getInstance().getCamera()->GetViewMatrix();
+    Scene::getInstance().getCamera()->setViewMatrix(glm::mat4(glm::mat3(Scene::getInstance().getCamera()->GetViewMatrix())));
+    shader->bind();
+    glUniform1i(shader->Uniforms[mgl::SKYBOX].index, 0);
+    skybox.draw();
+    shader->unbind();
+    Scene::getInstance().getCamera()->setViewMatrix(viewMatrixBackUp);
+    glDepthFunc(GL_LESS);
+}
+

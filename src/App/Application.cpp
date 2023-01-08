@@ -35,7 +35,7 @@ private:
 /////////////////////////////////////////////////////////////////////////// DRAW
 
 void MyApp::drawScene() {
-    renderer.drawScene();
+    renderer.draw();
 }
 
 ////////////////////////////////////////////////////////////////////// CALLBACKS
@@ -43,7 +43,8 @@ void MyApp::drawScene() {
 void MyApp::initCallback(GLFWwindow *win) {
     int width, height;
     glfwGetWindowSize(win, &width, &height);
-
+    renderer.init();
+    renderer.loadSkyBox("resources/textures/skybox/sky");
     renderer.createShaderPrograms();
     MaterialsLibrary::getInstance().createMaterial("default", glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.5f, 0.5f), 128.0f, mgl::ShaderType::light);
     scene.init(new mgl::Camera(width, height, glm::vec3(0.0f, 0.0f, -8.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));

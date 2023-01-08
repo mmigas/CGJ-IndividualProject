@@ -52,8 +52,7 @@ namespace mgl {
         glDeleteProgram(ProgramId);
     }
 
-    void ShaderProgram::addShader(const GLenum shader_type,
-                                  const std::string &filename) {
+    void ShaderProgram::addShader(const GLenum shader_type, const std::string &filename) {
         const GLuint shader_id = glCreateShader(shader_type);
         const std::string scode = read(filename);
         const GLchar *code = scode.c_str();

@@ -19,11 +19,11 @@ namespace mgl {
     Camera::~Camera() {
     }
 
-    void Camera::SetCameraView(glm::vec3 eye, glm::vec3 lookat, glm::vec3 up) {
-        m_eye = eye;
-        m_lookAt = lookat;
-        m_upVector = up;
-        updateViewMatrix();
+    void Camera::setViewMatrix(glm::mat4 viewMatrix) {
+        ViewMatrix = viewMatrix;
+        glBindBuffer(GL_UNIFORM_BUFFER, UboId);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(ViewMatrix));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
     void Camera::changeMode() {
@@ -108,6 +108,14 @@ namespace mgl {
             aspectRatio = (float) width / (float) height;
         }
         updateProjectionMatrix();
+    }
+
+    glm::mat4 Camera::GetViewMatrix() {
+        return ViewMatrix;
+    }
+
+    glm::mat4 Camera::GetProjectionMatrix() {
+        return ProjectionMatrix;
     }
 
 
