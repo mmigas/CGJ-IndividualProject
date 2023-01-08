@@ -15,18 +15,14 @@ void Renderer::createShaderProgram(mgl::ShaderType shaderType, const std::string
     shaders->addShader(GL_FRAGMENT_SHADER, fragmentShaderPath);
 
     shaders->addAttribute(mgl::POSITION_ATTRIBUTE, mgl::Mesh::POSITION);
-    //if (getMesh().hasNormals()) {
     shaders->addAttribute(mgl::NORMAL_ATTRIBUTE, mgl::Mesh::NORMAL);
-    //}
-    //if (getMesh().hasTexcoords()) {
     shaders->addAttribute(mgl::TEXCOORD_ATTRIBUTE, mgl::Mesh::TEXCOORD);
-    //}
-    //if (getMesh().hasTangentsAndBitangents()) {
     shaders->addAttribute(mgl::TANGENT_ATTRIBUTE, mgl::Mesh::TANGENT);
-    //}
 
     shaders->addUniform(mgl::MODEL_MATRIX);
-    shaders->addUniform("CameraPosition");
+    if (shaderType == mgl::ShaderType::light) {
+        shaders->addUniform(mgl::CAMERA_POSITION);
+    }
     shaders->addUniformBlock(mgl::CAMERA_BLOCK, mgl::CAMERA_BLOCK_BINDING_POINT);
     shaders->addUniformBlock(mgl::MATERIAL_BLOCK, mgl::MATERIAL_BLOCK_BINDING_POINT);
     shaders->addUniformBlock(mgl::LIGHT_BLOCK, mgl::LIGHT_BLOCK_BINDING_POINT);
@@ -40,9 +36,9 @@ void Renderer::drawScene() {
         shader->bind();
         if (object.getMaterial()->getShaderType() == mgl::ShaderType::light) {
             scene.getLight()->bind();
+            glm::vec3 cameraPosition = Scene::getInstance().getCamera()->GetEye();
+            glUniform3f(shader->Uniforms[mgl::CAMERA_POSITION].index, cameraPosition.x, cameraPosition.y, cameraPosition.z);
         }
-        glm::vec3 cameraPosition = Scene::getInstance().getCamera()->GetEye();
-        glUniform3f(shader->Uniforms["CameraPosition"].index, cameraPosition.x, cameraPosition.y, cameraPosition.z);
         object.draw();
         shader->unbind();
     }

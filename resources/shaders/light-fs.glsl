@@ -33,7 +33,7 @@ void main(void) {
     vec3 diffuse = light.diffuse * (diff * material.diffuse);
 
     // specular
-    vec3 viewDir = normalize(vec3(0.0f, 0.0f, -8.0f) - exPosition);
+    vec3 viewDir = normalize(CameraPosition - exPosition);
     vec3 reflectDir = reflect(-lightDirection, normal);
     vec3 halfwayDir = normalize(lightDirection + viewDir);
     float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
