@@ -15,7 +15,7 @@ public:
 
     Object(const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int materialID);
 
-    void draw();
+    void draw(GLuint &materialUBO);
 
     void createShaderPrograms();
 

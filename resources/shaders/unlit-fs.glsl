@@ -13,6 +13,7 @@ uniform Material {
     vec3 specular;
     float shininess;
     float reflectiveness;
+    bool transparent;
 } material;
 
 out vec4 FragmentColor;
@@ -27,11 +28,16 @@ void main(void) {
 
     vec3 reflectionMatColor = mix(material.color, reflectionColor, material.reflectiveness);
 
-    //Environment refraction
-    float ratio = 1.0f / 1.52f; //Air to glass
-    vec3 N = refract(I, normal, ratio);
-    vec3 refractionColor = texture(Skybox, N).rgb;
+    vec3 finalColor;
+    if (material.transparent) {
+        //Environment refraction
+        float ratio = 1.0f / 1.52f; //Air to glass
+        vec3 N = refract(I, normal, ratio);
+        vec3 refractionColor = texture(Skybox, N).rgb;
+        finalColor = mix(refractionColor, reflectionMatColor, 0.5f);
+    } else {
+        finalColor = reflectionMatColor;
+    }
 
-    vec3 result = mix(refractionColor, reflectionMatColor, 0.5f);
-    FragmentColor = vec4(result, 1.0f);
+    FragmentColor = vec4(finalColor, 1.0f);
 }

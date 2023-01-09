@@ -6,8 +6,8 @@ void MaterialsLibrary::createMaterial(const std::string &name, glm::vec3 color) 
     latestID++;
 }
 
-void MaterialsLibrary::createMaterial(const std::string &name, glm::vec3 color, float shininess, float reflectiveness, mgl::ShaderType shaderType) {
-    addMaterial(name, new Material(latestID, color, shininess, reflectiveness, shaderType));
+void MaterialsLibrary::createMaterial(const std::string &name, glm::vec3 color, float shininess, float reflectiveness, bool transparent, mgl::ShaderType shaderType) {
+    addMaterial(name, new Material(latestID, color, shininess, reflectiveness, transparent, shaderType));
     latestID++;
 }
 

@@ -9,6 +9,8 @@ class Renderer {
     Scene &scene;
     std::unordered_map<mgl::ShaderType, std::shared_ptr<mgl::ShaderProgram>> shaderPrograms;
     SkyBox skybox{};
+
+    GLuint materialsUBO;
 public:
     Renderer();
 

@@ -20,9 +20,9 @@ glm::mat4 Object::getModelMatrix() {
            glm::scale(glm::mat4(1), scale);
 }
 
-void Object::draw() {
+void Object::draw(GLuint &materialUBO) {
     if (mesh->initialized) {
-        material->bind();
+        material->bind(materialUBO);
         glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, glm::value_ptr(getModelMatrix()));
         mesh->draw();
     }

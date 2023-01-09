@@ -6,6 +6,11 @@ Renderer::Renderer() : scene(Scene::getInstance()) {
 
 void Renderer::init() {
     skybox.init();
+    glGenBuffers(1, &materialsUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, materialsUBO);
+    glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::vec4) + 2 * sizeof(float) + sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, mgl::MATERIAL_BLOCK_BINDING_POINT, materialsUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void Renderer::createShaderPrograms() {
@@ -63,7 +68,7 @@ void Renderer::drawScene() {
         glm::vec3 cameraPosition = Scene::getInstance().getCamera()->GetEye();
         glUniform3f(shader->Uniforms[mgl::CAMERA_POSITION].index, cameraPosition.x, cameraPosition.y, cameraPosition.z);
         glUniform1i(shader->Uniforms[mgl::SKYBOX].index, 0);
-        object.draw();
+        object.draw(materialsUBO);
         shader->unbind();
     }
 }
