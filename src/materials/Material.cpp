@@ -1,8 +1,8 @@
 #include "Material.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-Material::Material(int id, const glm::vec3 &color, const glm::vec3 &diffuse, const glm::vec3 &specular, float shininess, mgl::ShaderType shaderType) :
-        id(id), color(color), diffuse(diffuse), specular(specular), shininess(shininess), shaderType(shaderType) {
+Material::Material(int id, const glm::vec3 &color, float shininess, mgl::ShaderType shaderType) :
+        id(id), color(color), diffuse(color * 0.6f), specular(color * 0.3f), shininess(shininess), shaderType(shaderType) {
     glGenBuffers(1, &UboId);
     glBindBuffer(GL_UNIFORM_BUFFER, UboId);
     glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::vec4) + sizeof(float), nullptr, GL_DYNAMIC_DRAW);

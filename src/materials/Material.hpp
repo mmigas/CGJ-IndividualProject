@@ -17,7 +17,7 @@ private:
 public:
     mgl::ShaderProgram *shaders;
 
-    Material(int id, const glm::vec3 &color, const glm::vec3 &diffuse, const glm::vec3 &specular, float shininess, mgl::ShaderType shaderType);
+    Material(int id, const glm::vec3 &color, float shininess, mgl::ShaderType shaderType);
 
     const glm::vec3 &getColor();
 

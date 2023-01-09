@@ -5,6 +5,7 @@ in vec2 exTexcoord;
 in vec3 exNormal;
 
 uniform vec3 CameraPosition;
+uniform samplerCube Skybox;
 
 uniform Material {
     vec3 color;
@@ -39,6 +40,12 @@ void main(void) {
     float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
     vec3 specular = light.specular * (spec * material.specular);
 
-    vec3 result = ambient + diffuse + specular;
+    vec3 materialColor = ambient + diffuse + specular;
+
+    vec3 I = normalize(exPosition - CameraPosition);
+    vec3 R = reflect(I, normal);
+
+    vec3 result = mix(materialColor, texture(Skybox, R).rgb, 0.0f);
+
     FragmentColor = vec4(result, 1.0f);
 }

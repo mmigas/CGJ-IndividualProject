@@ -31,6 +31,7 @@ void Renderer::createShaderProgram(mgl::ShaderType shaderType, const std::string
     shaders->addUniform(mgl::MODEL_MATRIX);
     if (shaderType == mgl::ShaderType::light) {
         shaders->addUniform(mgl::CAMERA_POSITION);
+        shaders->addUniform(mgl::SKYBOX);
     }
     shaders->addUniformBlock(mgl::CAMERA_BLOCK, mgl::CAMERA_BLOCK_BINDING_POINT);
     shaders->addUniformBlock(mgl::MATERIAL_BLOCK, mgl::MATERIAL_BLOCK_BINDING_POINT);
@@ -62,6 +63,7 @@ void Renderer::drawScene() {
             scene.getLight()->bind();
             glm::vec3 cameraPosition = Scene::getInstance().getCamera()->GetEye();
             glUniform3f(shader->Uniforms[mgl::CAMERA_POSITION].index, cameraPosition.x, cameraPosition.y, cameraPosition.z);
+            glUniform1i(shader->Uniforms[mgl::SKYBOX].index, 0);
         }
         object.draw();
         shader->unbind();
