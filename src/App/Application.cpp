@@ -1,5 +1,4 @@
 #include <glm/glm.hpp>
-#include <filesystem>
 
 #include "../mgl/mgl.hpp"
 #include "Scene.hpp"
@@ -46,7 +45,7 @@ void MyApp::initCallback(GLFWwindow *win) {
     renderer.init();
     renderer.loadSkyBox("resources/textures/skybox/sky");
     renderer.createShaderPrograms();
-    MaterialsLibrary::getInstance().createMaterial("default", glm::vec3(1.0f, 1.0f, 1.0f), 32.0f, 0.3f, mgl::ShaderType::light);
+    MaterialsLibrary::getInstance().createMaterial("default", glm::vec3(1.0f, 1.0f, 1.0f), 32.0f, 0.3f, mgl::ShaderType::unlit);
     scene.init(new mgl::Camera(width, height, glm::vec3(0.0f, 0.0f, -8.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
     scene.createEntity("RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("default"), glm::vec3(0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f));
     scene.createLight(glm::vec3(0.0f, 0.0f, -8.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.5f);
