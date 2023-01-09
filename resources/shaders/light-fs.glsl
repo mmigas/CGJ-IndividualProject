@@ -43,11 +43,18 @@ void main(void) {
 
     vec3 materialColor = ambient + diffuse + specular;
 
-    //Environment map
+    //Environment map reflection
     vec3 I = normalize(exPosition - CameraPosition);
     vec3 R = reflect(I, normal);
+    vec3 reflectionColor = texture(Skybox, R).rgb;
 
-    vec3 result = mix(materialColor, texture(Skybox, R).rgb, material.reflectiveness);
+    vec3 reflectionMatColor = mix(materialColor, reflectionColor, material.reflectiveness);
 
-    FragmentColor = vec4(result, 1.0f);
+    //Environment map refraction
+    float ratio = 1.0f / 1.52f; //Air to glass
+    vec3 N = refract(I, normal, ratio);
+    vec3 refractionColor = texture(Skybox, N).rgb;
+
+    vec3 finalColor = mix(reflectionMatColor, refractionColor, 0.5f);
+    FragmentColor = vec4(finalColor, 1.0f);
 }

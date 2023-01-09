@@ -19,6 +19,13 @@ namespace mgl {
     Camera::~Camera() {
     }
 
+    void Camera::setCameraView(glm::vec3 eye, glm::vec3 lookat, glm::vec3 up) {
+        m_eye = eye;
+        m_lookAt = lookat;
+        m_upVector = up;
+        updateViewMatrix();
+    }
+
     void Camera::setViewMatrix(glm::mat4 viewMatrix) {
         ViewMatrix = viewMatrix;
         glBindBuffer(GL_UNIFORM_BUFFER, UboId);

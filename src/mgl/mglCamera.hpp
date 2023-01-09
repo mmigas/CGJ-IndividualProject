@@ -39,6 +39,8 @@ namespace mgl {
 
         ~Camera();
 
+        void setCameraView(glm::vec3 eye, glm::vec3 lookat, glm::vec3 up);
+
         void setViewMatrix(glm::mat4 viewMatrix);
 
         void changeMode();
