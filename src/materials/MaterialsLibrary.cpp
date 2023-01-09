@@ -1,8 +1,13 @@
 #include <iostream>
 #include "MaterialsLibrary.hpp"
 
-void MaterialsLibrary::createMaterial(const std::string &name, glm::vec3 color, float shininess, mgl::ShaderType shaderType) {
-    addMaterial(name, new Material(latestID, color, shininess, shaderType));
+void MaterialsLibrary::createMaterial(const std::string &name, glm::vec3 color) {
+    addMaterial(name, new Material(latestID, color));
+    latestID++;
+}
+
+void MaterialsLibrary::createMaterial(const std::string &name, glm::vec3 color, float shininess, float reflectiveness, mgl::ShaderType shaderType) {
+    addMaterial(name, new Material(latestID, color, shininess, reflectiveness, shaderType));
     latestID++;
 }
 
@@ -27,5 +32,6 @@ Material *MaterialsLibrary::getMaterial(const int id) {
 MaterialsLibrary &MaterialsLibrary::getInstance() {
     return instance;
 }
+
 
 MaterialsLibrary MaterialsLibrary::instance;

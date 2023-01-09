@@ -1,11 +1,11 @@
 #include "Material.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-Material::Material(int id, const glm::vec3 &color, float shininess, mgl::ShaderType shaderType) :
-        id(id), color(color), diffuse(color * 0.6f), specular(color * 0.3f), shininess(shininess), shaderType(shaderType) {
+Material::Material(int id, const glm::vec3 &color, float shininess, float reflectiveness, mgl::ShaderType shaderType) :
+        id(id), color(color), diffuse(color * 0.6f), specular(color * 0.3f), shininess(shininess), reflectiveness(reflectiveness), shaderType(shaderType) {
     glGenBuffers(1, &UboId);
     glBindBuffer(GL_UNIFORM_BUFFER, UboId);
-    glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::vec4) + sizeof(float), nullptr, GL_DYNAMIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::vec4) + 2 * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, mgl::MATERIAL_BLOCK_BINDING_POINT, UboId);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
@@ -24,6 +24,7 @@ void Material::bind() {
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4), sizeof(glm::vec3), glm::value_ptr(diffuse));
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 2, sizeof(glm::vec3), glm::value_ptr(specular));
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 2 + sizeof(glm::vec3), sizeof(float), &shininess);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::vec4) * 2 + sizeof(glm::vec3) + sizeof(float), sizeof(float), &reflectiveness);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 

@@ -16,7 +16,9 @@ private:
 
 public:
 
-    void createMaterial(const std::string &name, glm::vec3 color, float shininess, mgl::ShaderType shaderType);
+    void createMaterial(const std::string &name, glm::vec3 color);
+
+    void createMaterial(const std::string &name, glm::vec3 color, float shininess, float reflectiveness, mgl::ShaderType shaderType);
 
     int getMaterialID(const std::string &name);
 

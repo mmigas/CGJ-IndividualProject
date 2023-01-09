@@ -12,6 +12,7 @@ uniform Material {
     vec3 diffuse;
     vec3 specular;
     float shininess;
+    float reflectiveness;
 } material;
 
 uniform Light {
@@ -42,10 +43,11 @@ void main(void) {
 
     vec3 materialColor = ambient + diffuse + specular;
 
+    //Environment map
     vec3 I = normalize(exPosition - CameraPosition);
     vec3 R = reflect(I, normal);
 
-    vec3 result = mix(materialColor, texture(Skybox, R).rgb, 0.0f);
+    vec3 result = mix(materialColor, texture(Skybox, R).rgb, material.reflectiveness);
 
     FragmentColor = vec4(result, 1.0f);
 }
