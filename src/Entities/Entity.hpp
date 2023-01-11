@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GL/glew.h"
+#include "../mgl/mgl.hpp"
 #include "glm/glm.hpp"
 
 class Entity {
@@ -11,7 +11,7 @@ protected:
     glm::vec3 rotation;
     glm::vec3 scale;
 
-    GLint modelMatrixID;
+    int modelMatrixID;
     glm::mat4 modelMatrix{1};
 
 public:

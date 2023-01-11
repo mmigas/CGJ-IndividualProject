@@ -1,9 +1,10 @@
 #include <glm/glm.hpp>
 
 #include "../mgl/mgl.hpp"
-#include "Scene.hpp"
 #include "../materials/MaterialsLibrary.hpp"
 #include "Renderer.hpp"
+#include "../Gui/GuiManager.hpp"
+#include "Scene.hpp"
 
 ////////////////////////////////////////////////////////////////////////// MYAPP
 struct cursor {
@@ -35,6 +36,7 @@ private:
     Scene &scene;
     Renderer renderer;
     cursor cursor;
+    GuiManager guiManager;
 
     void drawScene();
 
@@ -54,6 +56,7 @@ void MyApp::drawScene() {
 void MyApp::initCallback(GLFWwindow *win) {
     int width, height;
     glfwGetWindowSize(win, &width, &height);
+    guiManager.initImGui(win);
     renderer.init();
     renderer.loadSkyBox("resources/textures/skybox/sky");
     renderer.createShaderPrograms();
@@ -62,9 +65,9 @@ void MyApp::initCallback(GLFWwindow *win) {
     MaterialsLibrary::getInstance().createMaterial("unlit", glm::vec3(0.0f, 1.0f, 0.0f), 32.0f, 0.5f, true, mgl::ShaderType::unlit);
     MaterialsLibrary::getInstance().createMaterial("opaque", glm::vec3(0.0f, 0.0f, 1.0f), 64.0f, 0.1f, false, mgl::ShaderType::unlit);
     scene.init(new mgl::Camera(width, height, glm::vec3(0.0f, 0.0f, -12.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
-    scene.createEntity("RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("light"), glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f));
-    scene.createEntity("RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("unlit"), glm::vec3(0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f));
-    scene.createEntity("RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("opaque"), glm::vec3(-3.0f, 0.0f, 0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f));
+    scene.createEntity("lit", "RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("light"), glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f));
+    scene.createEntity("unlit", "RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("unlit"), glm::vec3(0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f));
+    scene.createEntity("opaque", "RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("opaque"), glm::vec3(-3.0f, 0.0f, 0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f));
     scene.createLight(glm::vec3(0.0f, 0.0f, -8.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.5f);
 }
 
@@ -74,11 +77,15 @@ void MyApp::windowSizeCallback(GLFWwindow *win, int winx, int winy) {
 }
 
 void MyApp::displayCallback(GLFWwindow *win, double elapsed) {
-    glfwGetCursorPos(win, &cursor.xPos, &cursor.yPos);
     if (cursor.pressing) {
         updateCamera();
     }
     drawScene();
+    glfwGetCursorPos(win, &cursor.xPos, &cursor.yPos);
+    guiManager.beginImGuiFrame();
+    guiManager.update();
+    guiManager.endImGuiFrame();
+
 }
 
 void MyApp::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
@@ -139,9 +146,7 @@ void MyApp::scrollCallback(GLFWwindow *win, double xoffset, double yoffset) {
 }
 
 MyApp::MyApp() : scene(Scene::getInstance()) {
-
 }
-
 
 /////////////////////////////////////////////////////////////////////////// MAIN
 

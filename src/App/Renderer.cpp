@@ -59,7 +59,7 @@ void Renderer::draw() {
 }
 
 void Renderer::drawScene() {
-    for (Object &object: scene.getObject()) {
+    for (Object &object: scene.getObjects()) {
         std::shared_ptr<mgl::ShaderProgram> shader = shaderPrograms[object.getMaterial()->getShaderType()];
         shader->bind();
         if (object.getMaterial()->getShaderType() == mgl::ShaderType::light) {

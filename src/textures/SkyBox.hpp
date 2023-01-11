@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include "GL/glew.h"
+#include "../mgl/mgl.hpp"
 
 class SkyBox {
 private:

@@ -5,8 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-Object::Object(const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int materialID)
-        : materialID(materialID), Entity(position, rotation, scale) {
+Object::Object(const std::string &name, const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int materialID)
+        : name(name), materialID(materialID), Entity(position, rotation, scale) {
     mesh = new mgl::Mesh();
     mesh->joinIdenticalVertices();
     mesh->create(meshFilePath, materialID);
@@ -59,4 +59,8 @@ void Object::createShaderPrograms() {
 
 Material *Object::getMaterial() {
     return material;
+}
+
+std::string Object::getName() {
+    return name;
 }
