@@ -80,16 +80,8 @@ void Renderer::drawChildren(Object &parent) {
 
 void Renderer::drawScene() {
     for (Object &object: scene.getObjects()) {
-        std::shared_ptr<mgl::ShaderProgram> shader = shaderPrograms[object.getMaterial()->getShaderType()];
-        shader->bind();
-        if (object.getMaterial()->getShaderType() == mgl::ShaderType::light) {
-            scene.getLight()->bind();
-        }
-        glm::vec3 cameraPosition = Scene::getInstance().getCamera()->GetEye();
-        glUniform3f(shader->Uniforms[mgl::CAMERA_POSITION].index, cameraPosition.x, cameraPosition.y, cameraPosition.z);
-        glUniform1i(shader->Uniforms[mgl::SKYBOX].index, 0);
-        object.draw(materialsUBO);
-        shader->unbind();
+        drawChildren(object);
+        drawObject(object);
     }
 }
 
