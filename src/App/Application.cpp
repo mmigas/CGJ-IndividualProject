@@ -4,7 +4,6 @@
 #include "../materials/MaterialsLibrary.hpp"
 #include "Renderer.hpp"
 #include "../Gui/GuiManager.hpp"
-#include "Scene.hpp"
 
 ////////////////////////////////////////////////////////////////////////// MYAPP
 struct cursor {

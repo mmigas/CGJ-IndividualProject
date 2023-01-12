@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "../Entities/Entity.hpp"
+#include "../scene/entities/Entity.hpp"
 
 class Light : public Entity {
 private:

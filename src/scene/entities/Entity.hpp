@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../mgl/mgl.hpp"
+#include "../../mgl/mgl.hpp"
 #include "glm/glm.hpp"
 
 class Entity {

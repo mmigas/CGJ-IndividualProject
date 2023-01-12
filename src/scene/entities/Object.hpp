@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Entity.hpp"
-#include "../mgl/mglMesh.hpp"
-#include "../materials/Material.hpp"
+#include "../../mgl/mglMesh.hpp"
+#include "../../materials/Material.hpp"
 
 class Object : public Entity {
 private:

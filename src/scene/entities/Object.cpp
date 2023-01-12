@@ -1,6 +1,6 @@
 #include "Object.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#include "../materials/MaterialsLibrary.hpp"
+#include "../../materials/MaterialsLibrary.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>

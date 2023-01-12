@@ -46,6 +46,7 @@ add_library(GLEW SHARED IMPORTED)
 add_library(GLFW SHARED IMPORTED)
 add_library(Assimp SHARED IMPORTED)
 add_library(imgui STATIC IMPORTED)
+add_library(imguizmo STATIC IMPORTED)
 # ... add other libs ...
 
 if (WIN32) # WINDOWS
@@ -64,8 +65,13 @@ if (WIN32) # WINDOWS
             IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/Assimp/bin/assimp-vc143-mtd.dll
             IMPORTED_IMPLIB ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/Assimp/lib/assimp-vc143-mtd.lib
             )
+
     set_target_properties(imgui PROPERTIES
             IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imgui/lib/imgui.lib
+            )
+
+    set_target_properties(imguizmo PROPERTIES
+            IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imguizmo/lib/imGuizmo.lib
             )
 
     # ... add other libs ...
@@ -79,6 +85,7 @@ set(GRAPHIC_LIBRARIES
         GLEW
         Assimp
         imgui
+        imguizmo
         ${OPENGL_LIBS}
         )
 
@@ -96,22 +103,28 @@ add_executable(${PROJECT_NAME} src/mgl/mgl.hpp
         src/mgl/mglShader.cpp
         src/mgl/mglShader.hpp
         src/App/Application.cpp
-        src/App/Scene.cpp
-        src/App/Scene.hpp
-        src/entities/Object.cpp
-        src/entities/Object.hpp
+        src/scene/Scene.cpp
+        src/scene/Scene.hpp
+        src/scene/entities/Object.cpp
+        src/scene/entities/Object.hpp
+        src/scene/entities/Entity.cpp
+        src/scene/entities/Entity.hpp
         src/materials/Material.cpp
         src/materials/Material.hpp
         src/materials/MaterialsLibrary.cpp
         src/materials/MaterialsLibrary.hpp
         src/light/Light.cpp
         src/light/Light.hpp
-        src/entities/Entity.cpp
-        src/entities/Entity.hpp
         src/App/Renderer.cpp
         src/App/Renderer.hpp
         src/textures/SkyBox.cpp
-        src/textures/SkyBox.hpp src/Gui/GuiManager.cpp src/Gui/GuiManager.hpp src/Gui/SceneHierarchy.cpp src/Gui/SceneHierarchy.hpp src/Gui/Guizmo.cpp src/Gui/Guizmo.hpp)
+        src/textures/SkyBox.hpp
+        src/gui/GuiManager.cpp
+        src/gui/GuiManager.hpp
+        src/gui/SceneHierarchy.cpp
+        src/gui/SceneHierarchy.hpp
+        src/gui/Guizmo.cpp
+        src/gui/Guizmo.hpp)
 
 include_directories(
         ${OPENGL_INCLUDE_DIRS}
@@ -122,6 +135,7 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/Assimp/include
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb_image/include
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imgui/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imguizmo/include
         # ... add other libs ...
 )
 # Link the libs with the executable

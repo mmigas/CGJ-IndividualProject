@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "../Entities/Object.hpp"
+#include "entities/Object.hpp"
 #include "../light/Light.hpp"
 #include "../mgl/mglCamera.hpp"
 

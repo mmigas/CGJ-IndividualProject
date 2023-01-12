@@ -1,7 +1,7 @@
 #pragma once
 
 #include <unordered_map>
-#include "Scene.hpp"
+#include "../scene/Scene.hpp"
 #include "../textures/SkyBox.hpp"
 
 class Renderer {
