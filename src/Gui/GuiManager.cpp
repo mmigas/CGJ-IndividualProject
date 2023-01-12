@@ -102,5 +102,8 @@ void GuiManager::endImGuiFrame() {
 }
 
 void GuiManager::update() {
+    beginImGuiFrame();
     sceneHierarchy.onUpdate();
+    guizmo.editTransform(imguiContext, sceneHierarchy.selectedGO);
+    endImGuiFrame();
 }

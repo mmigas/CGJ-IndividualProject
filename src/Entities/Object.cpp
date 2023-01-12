@@ -4,20 +4,15 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <utility>
 
-Object::Object(const std::string &name, const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int materialID)
-        : name(name), materialID(materialID), Entity(position, rotation, scale) {
+Object::Object(std::string name, const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int materialID)
+        : name(std::move(name)), materialID(materialID), Entity(position, rotation, scale) {
     mesh = new mgl::Mesh();
     mesh->joinIdenticalVertices();
     mesh->create(meshFilePath, materialID);
     material = MaterialsLibrary::getInstance().getMaterial(materialID);
     createShaderPrograms();
-}
-
-glm::mat4 Object::getModelMatrix() {
-    return glm::translate(glm::mat4(1), position) *
-           glm::toMat4(glm::quat(glm::radians(rotation))) *
-           glm::scale(glm::mat4(1), scale);
 }
 
 void Object::draw(GLuint &materialUBO) {
@@ -26,10 +21,6 @@ void Object::draw(GLuint &materialUBO) {
         glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, glm::value_ptr(getModelMatrix()));
         mesh->draw();
     }
-}
-
-mgl::Mesh &Object::getMesh() {
-    return *mesh;
 }
 
 void Object::createShaderPrograms() {
@@ -57,6 +48,36 @@ void Object::createShaderPrograms() {
     material->shaders = shaders;
 }
 
+void Object::makeParent(Object &parent) {
+    this->parent = &parent;
+}
+
+void Object::addChild(Object child) {
+    child.makeParent(*this);
+    children.emplace_back(child);
+}
+
+glm::mat4 Object::getModelMatrix() {
+    Object *parent = this->parent;
+    glm::vec3 globalPosition = this->position;
+    glm::vec3 globalRotation = this->rotation;
+    glm::vec3 globalScale = this->scale;
+    while (parent != nullptr) {
+        globalPosition += parent->position;
+        globalRotation += parent->rotation;
+        globalScale += parent->scale;
+        parent = parent->parent;
+    }
+    modelMatrix = glm::translate(glm::mat4(1), globalPosition) *
+                  glm::toMat4(glm::quat(glm::radians(rotation))) *
+                  glm::scale(glm::mat4(1), scale);
+    return modelMatrix;
+}
+
+mgl::Mesh &Object::getMesh() {
+    return *mesh;
+}
+
 Material *Object::getMaterial() {
     return material;
 }
@@ -64,3 +85,9 @@ Material *Object::getMaterial() {
 std::string Object::getName() {
     return name;
 }
+
+std::vector<Object>& Object::getChildren() {
+    return children;
+}
+
+

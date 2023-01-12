@@ -31,4 +31,7 @@ private:
 
     void drawSkyBox();
 
+    void drawChildren(Object &object);
+
+    void drawObject(Object &object);
 };

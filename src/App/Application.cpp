@@ -68,6 +68,7 @@ void MyApp::initCallback(GLFWwindow *win) {
     scene.createEntity("lit", "RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("light"), glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f));
     scene.createEntity("unlit", "RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("unlit"), glm::vec3(0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f));
     scene.createEntity("opaque", "RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("opaque"), glm::vec3(-3.0f, 0.0f, 0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f));
+    scene.createEntity("lit's child", "RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("light"), glm::vec3(0.0f, 3.0f, 0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f), "lit");
     scene.createLight(glm::vec3(0.0f, 0.0f, -8.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.5f);
 }
 
@@ -82,10 +83,7 @@ void MyApp::displayCallback(GLFWwindow *win, double elapsed) {
     }
     drawScene();
     glfwGetCursorPos(win, &cursor.xPos, &cursor.yPos);
-    guiManager.beginImGuiFrame();
     guiManager.update();
-    guiManager.endImGuiFrame();
-
 }
 
 void MyApp::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {

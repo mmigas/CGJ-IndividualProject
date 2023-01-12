@@ -10,13 +10,18 @@ private:
     mgl::Mesh *mesh;
     int materialID;
     Material *material;
+    Object *parent = nullptr;
+    std::vector<Object> children;
 public:
-
-    Object(const std::string &name, const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int materialID);
+    Object(std::string name, const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int materialID);
 
     void draw(GLuint &materialUBO);
 
     void createShaderPrograms();
+
+    void makeParent(Object &parent);
+
+    void addChild(Object child);
 
     glm::mat4 getModelMatrix();
 
@@ -25,4 +30,6 @@ public:
     Material *getMaterial();
 
     std::string getName();
+
+    std::vector<Object> &getChildren();
 };

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Entities/Object.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "../Entities/Object.hpp"
 #include "../light/Light.hpp"
 #include "../mgl/mglCamera.hpp"
 
@@ -13,16 +13,17 @@ private:
     std::shared_ptr<Light> light;
     static Scene instance;
 public:
-
     void init(mgl::Camera *camera);
 
-    void createEntity(const std::string &name, const std::string &meshFile, int materialID);
+    void createEntity(const std::string &name, const std::string &meshFile, int materialID, const std::string &parent = "");
 
-    void createEntity(const std::string &name, const std::string &meshFile, int materialID, glm::vec3 position);
+    void createEntity(const std::string &name, const std::string &meshFile, int materialID, glm::vec3 position, const std::string &parent = "");
 
-    void createEntity(const std::string &name, const std::string &meshFile, int materialID, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
+    void createEntity(const std::string &name, const std::string &meshFile, int materialID, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, const std::string &parent = "");
 
     void createLight(glm::vec3 position, glm::vec3 color, float intensity);
+
+    void addChildTo(const std::string &parentName, const Object &child);
 
     mgl::Camera *getCamera();
 
@@ -32,4 +33,7 @@ public:
 
     std::shared_ptr<Light> getLight();
 
+    Object *searchObjectByName(const std::string &name);
+
+    Object *searchObjectByNameinChildren(Object &parent, const std::string &name);
 };
