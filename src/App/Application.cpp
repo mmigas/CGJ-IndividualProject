@@ -49,21 +49,13 @@ void MyApp::initCallback(GLFWwindow *win) {
     int width, height;
     glfwGetWindowSize(win, &width, &height);
     guiManager.init(win);
-
     scene.init(new mgl::Camera(width, height, glm::vec3(0.0f, 0.0f, -12.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
 
-    MaterialsLibrary::getInstance().createMaterial("light", glm::vec3(1.0f, 0.0f, 0.0f), 32.0f, 0.5f, true, mgl::ShaderType::light);
-    MaterialsLibrary::getInstance().createMaterial("unlit", glm::vec3(0.0f, 1.0f, 0.0f), 32.0f, 0.5f, true, mgl::ShaderType::unlit);
-    MaterialsLibrary::getInstance().createMaterial("opaque", glm::vec3(0.0f, 0.0f, 1.0f), 64.0f, 0.1f, false, mgl::ShaderType::unlit);
+    MaterialsLibrary::getInstance().createMaterial("reflectiveTransparent", glm::vec3(0.9f, 0.9f, 0.9f), 32.0f, 0.7f, false, mgl::ShaderType::light);
 
-    scene.createEntity("unlit", "RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("unlit"), glm::vec3(0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f));
+    scene.createEntity("bull", "Bull.obj", MaterialsLibrary::getInstance().getMaterialID("reflectiveTransparent"), glm::vec3(0.0f, -3.0f, 0), glm::vec3(-90.0f, 0.0f, 0.0f), glm::vec3(0.03f));
 
-    scene.createEntity("lit", "RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("light"), glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f));
-    scene.createEntity("lit's child", "RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("light"), glm::vec3(0.0f, 3.0f, 0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f), "lit");
-    scene.createEntity("opaque", "RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("opaque"), glm::vec3(-3.0f, 0.0f, 0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f));
-
-    scene.createLight(glm::vec3(0.0f, 0.0f, -8.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.5f);
-
+    scene.createLight(glm::vec3(0.0f, 4.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.8f);
 }
 
 void MyApp::windowSizeCallback(GLFWwindow *win, int winx, int winy) {

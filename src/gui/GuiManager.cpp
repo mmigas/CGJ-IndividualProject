@@ -24,7 +24,7 @@ void GuiManager::init(GLFWwindow *win) {
     ImGui_ImplOpenGL3_Init("#version 410");
 
     rendererPanel.getRenderer().init(win);
-    rendererPanel.getRenderer().loadSkyBox("resources/textures/skybox/sky");
+    rendererPanel.getRenderer().loadSkyBox("resources/textures/skybox/LancellottiChapel");
 }
 
 void GuiManager::beginImGuiFrame() {
@@ -132,15 +132,15 @@ std::string GuiManager::saveFile(const char *filter) {
 }
 
 void GuiManager::saveScene() {
-/*    std::string filepath = saveFile("Scene (*.scene)\0*.scene\0");
+    std::string filepath = saveFile("Scene (*.scene)\0*.scene\0");
     if (!filepath.empty()) {
-    }*/
-    SceneSerializer::serialize("resources/scenes/DefaultScene.scene");
+        SceneSerializer::serialize(filepath);
+    }
 }
 
 void GuiManager::openScene() {
-    //std::string filepath = openFileWindow("Scene (*.scene)\0*.scene\0");
-    SceneSerializer::deserialize("resources/scenes/DefaultScene.scene");
+    std::string filepath = openFileWindow("Scene (*.scene)\0*.scene\0");
+    SceneSerializer::deserialize(filepath);
 }
 
 void GuiManager::endImGuiFrame() {
