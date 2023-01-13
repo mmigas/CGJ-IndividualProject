@@ -1,0 +1,60 @@
+Materials:
+  - Name: unlit
+    ID: 1
+    color: [0, 1, 0]
+    diffuse: [0, 0.600000024, 0]
+    specular: [0, 0.300000012, 0]
+    shininess: 32
+    reflectiveness: 0.5
+    transparent: 1
+    shaderType: 0
+  - Name: light
+    ID: 0
+    color: [1, 0, 0]
+    diffuse: [0.600000024, 0, 0]
+    specular: [0.300000012, 0, 0]
+    shininess: 32
+    reflectiveness: 0.5
+    transparent: 1
+    shaderType: 1
+  - Name: opaque
+    ID: 2
+    color: [0, 0, 1]
+    diffuse: [0, 0, 0.600000024]
+    specular: [0, 0, 0.300000012]
+    shininess: 64
+    reflectiveness: 0.100000001
+    transparent: 0
+    shaderType: 0
+Objects:
+  - Name: unlit
+    MeshName: Square.obj
+    Position: [0, 0, 0]
+    Rotation: [90, 0, 0]
+    Scale: [1, 1, 1]
+    MaterialID: 1
+  - Name: lit
+    MeshName: Square.obj
+    Position: [3, 0, 0]
+    Rotation: [90, 0, 0]
+    Scale: [1, 1, 1]
+    MaterialID: 0
+    Children:
+      - Name: lit's child
+        MeshName: Square.obj
+        Position: [0, 3, 0]
+        Rotation: [90, 0, 0]
+        Scale: [1, 1, 1]
+        MaterialID: 0
+  - Name: opaque
+    MeshName: Square.obj
+    Position: [-3, 0, 0]
+    Rotation: [90, 0, 0]
+    Scale: [1, 1, 1]
+    MaterialID: 2
+Light:
+  - position: [0, 0, -8]
+    color: [1, 1, 1]
+    intensity: 0.5
+Skybox:
+  - skyboxFolder: resources/textures/skybox/sky

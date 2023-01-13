@@ -1,0 +1,38 @@
+Materials:
+  - Name: light
+    ID: 0
+    color: [0.899999976, 0.899999976, 0.899999976]
+    diffuse: [0.540000021, 0.540000021, 0.540000021]
+    specular: [0.270000011, 0.270000011, 0.270000011]
+    shininess: 32
+    reflectiveness: 0
+    transparent: 0
+    shaderType: 1
+  - Name: reflective
+    ID: 1
+    color: [0.899999976, 0.899999976, 0.899999976]
+    diffuse: [0.540000021, 0.540000021, 0.540000021]
+    specular: [0.270000011, 0.270000011, 0.270000011]
+    shininess: 32
+    reflectiveness: 0.699999988
+    transparent: 0
+    shaderType: 1
+Objects:
+  - Name: sphere1
+    MeshName: Teapot.obj
+    Position: [4, 0, 0]
+    Rotation: [0, 0, 0]
+    Scale: [1, 1, 1]
+    MaterialID: 0
+  - Name: sphere3
+    MeshName: Teapot.obj
+    Position: [-4, 0, 0]
+    Rotation: [0, 0, 0]
+    Scale: [1, 1, 1]
+    MaterialID: 1
+Light:
+  - position: [0, 4, 0]
+    color: [1, 1, 1]
+    intensity: 0.800000012
+Skybox:
+  - skyboxFolder: resources/textures/skybox/LancellottiChapel
