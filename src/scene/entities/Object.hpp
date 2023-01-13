@@ -36,4 +36,6 @@ public:
     bool hasChildren();
 
     void clearChildren();
+
+    const glm::vec3& getRotation();
 };

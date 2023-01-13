@@ -3,6 +3,7 @@
 #include <imgui.h>
 #include "SceneHierarchy.hpp"
 #include "Guizmo.hpp"
+#include "RendererPanel.hpp"
 #include <windows.h>
 
 class GuiManager {
@@ -10,8 +11,9 @@ private:
     ImGuiContext *imguiContext;
     SceneHierarchy sceneHierarchy;
     Guizmo guizmo;
+    RendererPanel rendererPanel;
 public:
-    void initImGui(GLFWwindow *win);
+    void init(GLFWwindow *win);
 
     void beginImGuiFrame();
 

@@ -4,13 +4,19 @@ Renderer::Renderer() : scene(Scene::getInstance()) {
 
 }
 
-void Renderer::init() {
+void Renderer::init(GLFWwindow *win) {
+    this->win = win;
     scene.getSkybox().init();
     glGenBuffers(1, &materialsUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, materialsUBO);
     glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::vec4) + 2 * sizeof(float) + sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, mgl::MATERIAL_BLOCK_BINDING_POINT, materialsUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    createShaderPrograms();
+    int width;
+    int height;
+    glfwGetWindowSize(win, &width, &height);
+    frameBuffer.init(0, width, height);
 }
 
 void Renderer::createShaderPrograms() {
@@ -54,8 +60,8 @@ void Renderer::createSkyBoxShaderProgram(const std::string &vertexShaderPath, co
 }
 
 void Renderer::draw() {
-    drawScene();
     drawSkyBox();
+    drawScene();
 }
 
 void Renderer::drawObject(std::shared_ptr<Object> object) {
@@ -97,5 +103,9 @@ void Renderer::drawSkyBox() {
     shader->unbind();
     Scene::getInstance().getCamera()->setViewMatrix(viewMatrixBackUp);
     glDepthFunc(GL_LESS);
+}
+
+FrameBuffer &Renderer::getFramebuffer() {
+    return frameBuffer;
 }
 

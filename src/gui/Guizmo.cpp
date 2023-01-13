@@ -78,7 +78,7 @@ void Guizmo::editTransform(ImGuiContext *context, std::shared_ptr<Object> select
     mgl::Camera *camera = Scene::getInstance().getCamera();
     ImGuizmo::SetImGuiContext(context);
     ImGuizmo::SetOrthographic(false);
-    ImGuizmo::SetDrawlist(ImGui::GetBackgroundDrawList());
+    ImGuizmo::SetDrawlist();
     auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
     auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
     auto viewportOffset = ImGui::GetWindowPos();
@@ -87,47 +87,20 @@ void Guizmo::editTransform(ImGuiContext *context, std::shared_ptr<Object> select
     m_ViewportBounds[1] = {viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y};
     ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y, m_ViewportBounds[1].x - m_ViewportBounds[0].x, m_ViewportBounds[1].y - m_ViewportBounds[0].y);
 
-    // Camera
-
-    // Runtime camera from entity
-    // auto cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
-    // const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
-    // const glm::mat4& cameraProjection = camera.GetProjection();
-    // glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
-
-    // Editor camera
     const glm::mat4 &cameraProjection = camera->GetProjectionMatrix();
     glm::mat4 cameraView = camera->GetViewMatrix();
 
-    // Entity transform
     glm::mat4 transform = selectedObject->getModelMatrix();
-
-/*
-    // Snapping
-    bool snap = Input::IsKeyPressed(Key::LeftControl);
-    float snapValue = 0.5f; // Snap to 0.5m for translation/scale
-    // Snap to 45 degrees for rotation
-
-    if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
-        snapValue = 45.0f;
-
-
-    float snapValues[3] = {snapValue, snapValue, snapValue};
-*/
     ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
                          (ImGuizmo::OPERATION) ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(transform),
-                         nullptr, /*snap ? snapValues : */nullptr);
+                         nullptr, nullptr);
 
     if (ImGuizmo::IsUsing()) {
         glm::vec3 translation, rotation, scale;
         DecomposeTransform(transform, translation, rotation, scale);
 
-/*        glm::vec3 deltaRotation = rotation - selectedObject->Rotation;
-        selectedObject->Translation = translation;
-        selectedObject->Rotation += deltaRotation;
-        selectedObject->Scale = scale;*/
+        selectedObject->move(translation);
     }
-
-
+    ImGui::End();
 }
 

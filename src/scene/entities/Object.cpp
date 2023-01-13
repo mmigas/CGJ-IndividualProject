@@ -72,6 +72,10 @@ void Object::clearChildren() {
     }
 }
 
+const glm::vec3 &Object::getRotation() {
+    return rotation;
+}
+
 
 
 

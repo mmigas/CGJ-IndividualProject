@@ -122,8 +122,8 @@ add_executable(${PROJECT_NAME} src/mgl/mgl.hpp
         src/materials/MaterialsLibrary.hpp
         src/light/Light.cpp
         src/light/Light.hpp
-        src/App/Renderer.cpp
-        src/App/Renderer.hpp
+        src/renderer/Renderer.cpp
+        src/renderer/Renderer.hpp
         src/textures/SkyBox.cpp
         src/textures/SkyBox.hpp
         src/gui/GuiManager.cpp
@@ -133,7 +133,11 @@ add_executable(${PROJECT_NAME} src/mgl/mgl.hpp
         src/gui/Guizmo.cpp
         src/gui/Guizmo.hpp
         src/scene/SceneSerializer.cpp
-        src/scene/SceneSerializer.hpp)
+        src/scene/SceneSerializer.hpp
+        src/gui/RendererPanel.cpp
+        src/gui/RendererPanel.hpp
+        src/renderer/FrameBuffer.cpp
+        src/renderer/FrameBuffer.hpp)
 
 include_directories(
         ${OPENGL_INCLUDE_DIRS}

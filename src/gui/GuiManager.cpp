@@ -4,7 +4,7 @@
 #include "../scene/SceneSerializer.hpp"
 #include <commdlg.h>
 
-void GuiManager::initImGui(GLFWwindow *win) {
+void GuiManager::init(GLFWwindow *win) {
     imguiContext = ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -22,6 +22,9 @@ void GuiManager::initImGui(GLFWwindow *win) {
 
     ImGui_ImplGlfw_InitForOpenGL(win, true);
     ImGui_ImplOpenGL3_Init("#version 410");
+
+    rendererPanel.getRenderer().init(win);
+    rendererPanel.getRenderer().loadSkyBox("resources/textures/skybox/sky");
 }
 
 void GuiManager::beginImGuiFrame() {
@@ -29,6 +32,7 @@ void GuiManager::beginImGuiFrame() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
+    createDockSpace();
     createMenuBar();
     ImGui::End();
 }
@@ -153,6 +157,8 @@ void GuiManager::endImGuiFrame() {
 void GuiManager::update() {
     beginImGuiFrame();
     sceneHierarchy.onUpdate();
+    rendererPanel.onUpdate();
     guizmo.editTransform(imguiContext, sceneHierarchy.selectedGO);
+    ImGui::End();
     endImGuiFrame();
 }
