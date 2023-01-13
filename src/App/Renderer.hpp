@@ -31,7 +31,7 @@ private:
 
     void drawSkyBox();
 
-    void drawChildren(Object &object);
+    void drawChildren(std::shared_ptr<Object> object);
 
-    void drawObject(Object &object);
+    void drawObject(std::shared_ptr<Object> object);
 };

@@ -4,32 +4,36 @@
 #include "../../mgl/mglMesh.hpp"
 #include "../../materials/Material.hpp"
 
-class Object : public Entity {
+class Object : public Entity, std::enable_shared_from_this<Object> {
 private:
+    friend class SceneSerializer;
+
     std::string name;
+    std::string meshFilePath;
     mgl::Mesh *mesh;
-    int materialID;
     Material *material;
-    Object *parent = nullptr;
-    std::vector<Object> children;
+    std::shared_ptr<Object> parent = nullptr;
+    std::vector<std::shared_ptr<Object>> children;
 public:
-    Object(std::string name, const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int materialID);
+    Object(std::string name, std::string meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int materialID);
 
     void draw(GLuint &materialUBO);
 
     void createShaderPrograms();
 
-    void makeParent(Object &parent);
+    void makeParent(std::shared_ptr<Object> parent);
 
-    void addChild(Object child);
+    void addChild(std::shared_ptr<Object> child);
 
     glm::mat4 getModelMatrix();
 
-    mgl::Mesh &getMesh();
+    std::string &getName();
 
     Material *getMaterial();
 
-    std::string getName();
+    std::vector<std::shared_ptr<Object>> &getChildren();
 
-    std::vector<Object> &getChildren();
+    bool hasChildren();
+
+    void clearChildren();
 };

@@ -6,11 +6,14 @@
 
 class MaterialsLibrary {
 private:
+    friend class SceneSerializer;
     MaterialsLibrary() = default;
 
     static MaterialsLibrary instance;
     std::unordered_map<std::string, Material *> materials;
     int latestID = 0;
+
+    void loadMaterial(int id, const std::string &name, glm::vec3 color, float shininess, float reflectiveness, bool transparent, mgl::ShaderType shaderType);
 
     void addMaterial(const std::string &name, Material *material);
 
@@ -24,6 +27,9 @@ public:
 
     Material *getMaterial(int id);
 
+    std::unordered_map<std::string, Material *> &getMaterials();
+
     static MaterialsLibrary &getInstance();
 
+    void clear();
 };

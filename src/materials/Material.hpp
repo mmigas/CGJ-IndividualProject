@@ -6,6 +6,8 @@
 
 class Material {
 private:
+    friend class SceneSerializer;
+
     const int id;
     glm::vec3 color;
     glm::vec3 diffuse;

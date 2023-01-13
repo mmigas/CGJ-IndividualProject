@@ -58,28 +58,29 @@ void Renderer::draw() {
     drawSkyBox();
 }
 
-void Renderer::drawObject(Object &object) {
-    std::shared_ptr<mgl::ShaderProgram> shader = shaderPrograms[object.getMaterial()->getShaderType()];
+void Renderer::drawObject(std::shared_ptr<Object> object) {
+    std::shared_ptr<mgl::ShaderProgram> shader = shaderPrograms[object->getMaterial()->getShaderType()];
     shader->bind();
-    if (object.getMaterial()->getShaderType() == mgl::ShaderType::light) {
+    if (object->getMaterial()->getShaderType() == mgl::ShaderType::light) {
         scene.getLight()->bind();
     }
     glm::vec3 cameraPosition = Scene::getInstance().getCamera()->GetEye();
     glUniform3f(shader->Uniforms[mgl::CAMERA_POSITION].index, cameraPosition.x, cameraPosition.y, cameraPosition.z);
     glUniform1i(shader->Uniforms[mgl::SKYBOX].index, 0);
-    object.draw(materialsUBO);
+    glUniformMatrix4fv(shader->Uniforms[mgl::MODEL_MATRIX].index, 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));
+    object->draw(materialsUBO);
     shader->unbind();
 }
 
-void Renderer::drawChildren(Object &parent) {
-    for (Object &child: parent.getChildren()) {
+void Renderer::drawChildren(std::shared_ptr<Object> parent) {
+    for (std::shared_ptr<Object> child: parent->getChildren()) {
         drawChildren(child);
     }
     drawObject(parent);
 }
 
 void Renderer::drawScene() {
-    for (Object &object: scene.getObjects()) {
+    for (std::shared_ptr<Object> object: scene.getObjects()) {
         drawChildren(object);
         drawObject(object);
     }

@@ -47,6 +47,7 @@ add_library(GLFW SHARED IMPORTED)
 add_library(Assimp SHARED IMPORTED)
 add_library(imgui STATIC IMPORTED)
 add_library(imguizmo STATIC IMPORTED)
+add_library(yaml-cpp SHARED IMPORTED)
 # ... add other libs ...
 
 if (WIN32) # WINDOWS
@@ -74,6 +75,11 @@ if (WIN32) # WINDOWS
             IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imguizmo/lib/imGuizmo.lib
             )
 
+    set_target_properties(yaml-cpp PROPERTIES
+            IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/yaml-cpp/bin/yaml-cpp.dll
+            IMPORTED_IMPLIB ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/yaml-cpp/lib/yaml-cpp.lib
+            )
+
     # ... add other libs ...
 else ()
     # Define the properties for other OSes
@@ -86,6 +92,7 @@ set(GRAPHIC_LIBRARIES
         Assimp
         imgui
         imguizmo
+        yaml-cpp
         ${OPENGL_LIBS}
         )
 
@@ -124,7 +131,9 @@ add_executable(${PROJECT_NAME} src/mgl/mgl.hpp
         src/gui/SceneHierarchy.cpp
         src/gui/SceneHierarchy.hpp
         src/gui/Guizmo.cpp
-        src/gui/Guizmo.hpp)
+        src/gui/Guizmo.hpp
+        src/scene/SceneSerializer.cpp
+        src/scene/SceneSerializer.hpp)
 
 include_directories(
         ${OPENGL_INCLUDE_DIRS}
@@ -136,6 +145,7 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb_image/include
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imgui/include
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imguizmo/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/yaml-cpp/include
         # ... add other libs ...
 )
 # Link the libs with the executable

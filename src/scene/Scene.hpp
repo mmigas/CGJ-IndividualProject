@@ -8,7 +8,7 @@
 
 class Scene {
 private:
-    std::vector<Object> objects;
+    std::vector<std::shared_ptr<Object>> objects;
     mgl::Camera *camera;
     std::shared_ptr<Light> light;
     static Scene instance;
@@ -23,17 +23,19 @@ public:
 
     void createLight(glm::vec3 position, glm::vec3 color, float intensity);
 
-    void addChildTo(const std::string &parentName, const Object &child);
+    void addChildTo(const std::string &parentName, std::shared_ptr<Object> child);
 
     mgl::Camera *getCamera();
 
-    std::vector<Object> &getObjects();
+    std::vector<std::shared_ptr<Object>> &getObjects();
 
     static Scene &getInstance();
 
     std::shared_ptr<Light> getLight();
 
-    Object *searchObjectByName(const std::string &name);
+    std::shared_ptr<Object> searchObjectByName(const std::string &name);
 
-    Object *searchObjectByNameinChildren(Object &parent, const std::string &name);
+    std::shared_ptr<Object> searchObjectByNameinChildren(std::shared_ptr<Object> parent, const std::string &name);
+
+    void clear();
 };

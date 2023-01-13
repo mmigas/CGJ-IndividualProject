@@ -1,6 +1,6 @@
 #include "Entity.hpp"
 
-Entity::Entity(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale) : position(position), rotation(rotation), scale(scale) {
+Entity::Entity(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale) : position(position), rotation(rotation), scale(scale) {
 
 }
 
@@ -16,3 +16,14 @@ void Entity::setScale(glm::vec3 scale) {
     this->scale = scale;
 }
 
+glm::vec3 Entity::getPosition() const {
+    return position;
+}
+
+glm::vec3 Entity::getRotation() const {
+    return rotation;
+}
+
+glm::vec3 Entity::getScale() const {
+    return scale;
+}

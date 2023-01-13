@@ -6,59 +6,32 @@
 #include <glm/gtx/quaternion.hpp>
 #include <utility>
 
-Object::Object(std::string name, const std::string &meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int materialID)
-        : name(std::move(name)), materialID(materialID), Entity(position, rotation, scale) {
+Object::Object(std::string name, std::string meshFilePath, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int materialID)
+        : name(std::move(name)), meshFilePath(std::move(meshFilePath)), Entity(position, rotation, scale) {
     mesh = new mgl::Mesh();
     mesh->joinIdenticalVertices();
-    mesh->create(meshFilePath, materialID);
+    mesh->create(this->meshFilePath, materialID);
     material = MaterialsLibrary::getInstance().getMaterial(materialID);
-    createShaderPrograms();
 }
 
 void Object::draw(GLuint &materialUBO) {
     if (mesh->initialized) {
         material->bind(materialUBO);
-        glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, glm::value_ptr(getModelMatrix()));
         mesh->draw();
     }
 }
 
-void Object::createShaderPrograms() {
-    mgl::ShaderProgram *shaders = new mgl::ShaderProgram();
-    shaders->addShader(GL_VERTEX_SHADER, "resources/shaders/light-vs.glsl");
-    shaders->addShader(GL_FRAGMENT_SHADER, "resources/shaders/light-fs.glsl");
-
-    shaders->addAttribute(mgl::POSITION_ATTRIBUTE, mgl::Mesh::POSITION);
-    if (getMesh().hasNormals()) {
-        shaders->addAttribute(mgl::NORMAL_ATTRIBUTE, mgl::Mesh::NORMAL);
-    }
-    if (getMesh().hasTexcoords()) {
-        shaders->addAttribute(mgl::TEXCOORD_ATTRIBUTE, mgl::Mesh::TEXCOORD);
-    }
-    if (getMesh().hasTangentsAndBitangents()) {
-        shaders->addAttribute(mgl::TANGENT_ATTRIBUTE, mgl::Mesh::TANGENT);
-    }
-
-    shaders->addUniform(mgl::MODEL_MATRIX);
-    shaders->addUniformBlock(mgl::CAMERA_BLOCK, mgl::CAMERA_BLOCK_BINDING_POINT);
-    shaders->addUniformBlock(mgl::MATERIAL_BLOCK, mgl::MATERIAL_BLOCK_BINDING_POINT);
-    shaders->create();
-
-    modelMatrixID = shaders->Uniforms[mgl::MODEL_MATRIX].index;
-    material->shaders = shaders;
+void Object::makeParent(std::shared_ptr<Object> parent) {
+    this->parent = parent;
 }
 
-void Object::makeParent(Object &parent) {
-    this->parent = &parent;
-}
-
-void Object::addChild(Object child) {
-    child.makeParent(*this);
+void Object::addChild(std::shared_ptr<Object> child) {
+    child->makeParent(shared_from_this());
     children.emplace_back(child);
 }
 
 glm::mat4 Object::getModelMatrix() {
-    Object *parent = this->parent;
+    std::shared_ptr<Object> parent = this->parent;
     glm::vec3 globalPosition = this->position;
     glm::vec3 globalRotation = this->rotation;
     glm::vec3 globalScale = this->scale;
@@ -74,20 +47,31 @@ glm::mat4 Object::getModelMatrix() {
     return modelMatrix;
 }
 
-mgl::Mesh &Object::getMesh() {
-    return *mesh;
-}
-
 Material *Object::getMaterial() {
     return material;
 }
 
-std::string Object::getName() {
+std::string &Object::getName() {
     return name;
 }
 
-std::vector<Object>& Object::getChildren() {
+std::vector<std::shared_ptr<Object>> &Object::getChildren() {
     return children;
 }
+
+bool Object::hasChildren() {
+    return !children.empty();
+}
+
+void Object::clearChildren() {
+    if (!children.empty()) {
+        for (std::shared_ptr<Object> object: children) {
+            object->clearChildren();
+            children.clear();
+        }
+    }
+}
+
+
 
 
