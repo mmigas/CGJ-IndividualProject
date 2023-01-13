@@ -42,12 +42,12 @@ endif ()
 # The `add_library` allows you to include libraries to your work.
 # The IMPORTED parameter defines the library as an external inclusion
 # The SHARED parameter defines the library as a dynamic library (.dll)
+add_library(yaml-cpp SHARED IMPORTED)
 add_library(GLEW SHARED IMPORTED)
 add_library(GLFW SHARED IMPORTED)
 add_library(Assimp SHARED IMPORTED)
 add_library(imgui STATIC IMPORTED)
 add_library(imguizmo STATIC IMPORTED)
-add_library(yaml-cpp SHARED IMPORTED)
 # ... add other libs ...
 
 if (WIN32) # WINDOWS
@@ -76,8 +76,8 @@ if (WIN32) # WINDOWS
             )
 
     set_target_properties(yaml-cpp PROPERTIES
-            IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/yaml-cpp/bin/yaml-cpp.dll
-            IMPORTED_IMPLIB ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/yaml-cpp/lib/yaml-cpp.lib
+            IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/yaml-cpp/bin/yaml-cppd.dll
+            IMPORTED_IMPLIB ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/yaml-cpp/lib/yaml-cppd.lib
             )
 
     # ... add other libs ...
@@ -162,6 +162,8 @@ add_custom_target(CopyLibs
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLEW/bin/Release/x64/ ${LIBRARY_OUTPUT_PATH}
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLFW/lib-vc2022/ ${LIBRARY_OUTPUT_PATH}
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/Assimp/bin/assimp-vc143-mtd.dll ${LIBRARY_OUTPUT_PATH}
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/yaml-cpp/bin/yaml-cppd.dll ${LIBRARY_OUTPUT_PATH}
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imgui/ini/imgui.ini ${LIBRARY_OUTPUT_PATH}
         )
 
 add_custom_target(CopyResourcesFiles
