@@ -6,8 +6,10 @@
 
 class SkyBox {
 private:
-    GLuint textureID;
+    friend class SceneSerializer;
 
+    std::string skyboxFolder;
+    GLuint textureID;
     GLuint vao;
     GLuint vbo;
 

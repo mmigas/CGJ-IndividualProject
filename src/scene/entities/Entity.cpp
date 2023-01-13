@@ -15,15 +15,3 @@ void Entity::rotate(glm::vec3 radians) {
 void Entity::setScale(glm::vec3 scale) {
     this->scale = scale;
 }
-
-glm::vec3 Entity::getPosition() const {
-    return position;
-}
-
-glm::vec3 Entity::getRotation() const {
-    return rotation;
-}
-
-glm::vec3 Entity::getScale() const {
-    return scale;
-}

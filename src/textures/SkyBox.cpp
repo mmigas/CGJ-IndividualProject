@@ -52,7 +52,6 @@ const float skyboxVertices[] = {
 };
 
 void SkyBox::init() {
-
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
     glBindVertexArray(vao);
@@ -64,6 +63,7 @@ void SkyBox::init() {
 }
 
 void SkyBox::loadCubeMap(const std::string &skyboxFolder) {
+    this->skyboxFolder = skyboxFolder;
     std::vector<std::string> faces;
     faces.push_back(skyboxFolder + "/right.jpg");
     faces.push_back(skyboxFolder + "/left.jpg");

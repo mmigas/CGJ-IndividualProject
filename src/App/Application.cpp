@@ -57,8 +57,9 @@ void MyApp::initCallback(GLFWwindow *win) {
     glfwGetWindowSize(win, &width, &height);
     guiManager.initImGui(win);
     renderer.init();
-    renderer.loadSkyBox("resources/textures/skybox/sky");
+   // renderer.loadSkyBox("resources/textures/skybox/sky");
     renderer.createShaderPrograms();
+    scene.init(new mgl::Camera(width, height, glm::vec3(0.0f, 0.0f, -12.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
     /*
      MaterialsLibrary::getInstance().createMaterial("light", glm::vec3(1.0f, 0.0f, 0.0f), 32.0f, 0.5f, true, mgl::ShaderType::light);
      MaterialsLibrary::getInstance().createMaterial("unlit", glm::vec3(0.0f, 1.0f, 0.0f), 32.0f, 0.5f, true, mgl::ShaderType::unlit);
@@ -69,9 +70,9 @@ void MyApp::initCallback(GLFWwindow *win) {
      scene.createEntity("lit", "RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("light"), glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f));
      scene.createEntity("lit's child", "RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("light"), glm::vec3(0.0f, 3.0f, 0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f), "lit");
      scene.createEntity("opaque", "RedSquare.obj", MaterialsLibrary::getInstance().getMaterialID("opaque"), glm::vec3(-3.0f, 0.0f, 0.0f), glm::vec3(90, 0, 0), glm::vec3(1.0f));
-         */
-    scene.init(new mgl::Camera(width, height, glm::vec3(0.0f, 0.0f, -12.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+
     scene.createLight(glm::vec3(0.0f, 0.0f, -8.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.5f);
+         */
 }
 
 void MyApp::windowSizeCallback(GLFWwindow *win, int winx, int winy) {

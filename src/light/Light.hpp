@@ -5,6 +5,7 @@
 
 class Light : public Entity {
 private:
+    friend class SceneSerializer;
 
     glm::vec3 color;
     float intensity;
@@ -17,7 +18,6 @@ public:
     glm::vec3 diffuse();
 
     glm::vec3 specular() const;
-
 
     void bind();
 };

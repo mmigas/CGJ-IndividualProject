@@ -5,7 +5,7 @@ Renderer::Renderer() : scene(Scene::getInstance()) {
 }
 
 void Renderer::init() {
-    skybox.init();
+    scene.getSkybox().init();
     glGenBuffers(1, &materialsUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, materialsUBO);
     glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::vec4) + 2 * sizeof(float) + sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW);
@@ -20,7 +20,7 @@ void Renderer::createShaderPrograms() {
 }
 
 void Renderer::loadSkyBox(const std::string &skyboxFolder) {
-    skybox.loadCubeMap(skyboxFolder);
+    scene.getSkybox().loadCubeMap(skyboxFolder);
 }
 
 void Renderer::createShaderProgram(mgl::ShaderType shaderType, const std::string &vertexShaderPath, const std::string &fragmentShaderPath) {
@@ -93,7 +93,7 @@ void Renderer::drawSkyBox() {
     Scene::getInstance().getCamera()->setViewMatrix(glm::mat4(glm::mat3(Scene::getInstance().getCamera()->GetViewMatrix())));
     shader->bind();
     glUniform1i(shader->Uniforms[mgl::SKYBOX].index, 0);
-    skybox.draw();
+    scene.getSkybox().draw();
     shader->unbind();
     Scene::getInstance().getCamera()->setViewMatrix(viewMatrixBackUp);
     glDepthFunc(GL_LESS);

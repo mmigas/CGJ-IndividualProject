@@ -11,7 +11,6 @@ protected:
     glm::vec3 rotation;
     glm::vec3 scale;
 
-    int modelMatrixID;
     glm::mat4 modelMatrix{1};
 
 public:
@@ -20,11 +19,5 @@ public:
     void rotate(glm::vec3 radians);
 
     void setScale(glm::vec3 scale);
-
-    glm::vec3 getPosition() const;
-
-    glm::vec3 getRotation() const;
-
-    glm::vec3 getScale() const;
 
 };

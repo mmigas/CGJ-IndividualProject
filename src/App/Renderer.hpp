@@ -2,13 +2,12 @@
 
 #include <unordered_map>
 #include "../scene/Scene.hpp"
-#include "../textures/SkyBox.hpp"
 
 class Renderer {
 
     Scene &scene;
     std::unordered_map<mgl::ShaderType, std::shared_ptr<mgl::ShaderProgram>> shaderPrograms;
-    SkyBox skybox{};
+
 
     GLuint materialsUBO;
 public:

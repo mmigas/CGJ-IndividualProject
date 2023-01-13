@@ -5,6 +5,7 @@
 #include "entities/Object.hpp"
 #include "../light/Light.hpp"
 #include "../mgl/mglCamera.hpp"
+#include "../textures/SkyBox.hpp"
 
 class Scene {
 private:
@@ -12,6 +13,8 @@ private:
     mgl::Camera *camera;
     std::shared_ptr<Light> light;
     static Scene instance;
+
+    SkyBox skybox{};
 public:
     void init(mgl::Camera *camera);
 
@@ -36,6 +39,8 @@ public:
     std::shared_ptr<Object> searchObjectByName(const std::string &name);
 
     std::shared_ptr<Object> searchObjectByNameinChildren(std::shared_ptr<Object> parent, const std::string &name);
+
+    SkyBox& getSkybox();
 
     void clear();
 };

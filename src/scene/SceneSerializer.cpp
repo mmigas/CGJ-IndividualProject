@@ -97,7 +97,7 @@ YAML::Emitter &operator<<(YAML::Emitter &out, const glm::vec4 &v) {
     return out;
 }
 
-void SceneSerializer::serializeGameObject(YAML::Emitter &out, std::shared_ptr<Object> object) {
+void SceneSerializer::serializeObject(YAML::Emitter &out, const std::shared_ptr<Object> &object) {
     out << YAML::BeginMap;
     out << YAML::Key << "Name" << YAML::Value << object->name;
     std::string meshName = object->meshFilePath;
@@ -111,7 +111,7 @@ void SceneSerializer::serializeGameObject(YAML::Emitter &out, std::shared_ptr<Ob
     if (object->hasChildren()) {
         out << YAML::Key << "Children" << YAML::Value << YAML::BeginSeq;
         for (auto &child: object->getChildren()) {
-            serializeGameObject(out, child);
+            serializeObject(out, child);
         }
         out << YAML::EndSeq;
     }
@@ -134,6 +134,20 @@ void SceneSerializer::serializeMaterial(YAML::Emitter &out, std::pair<std::strin
     out << YAML::EndMap;
 }
 
+void SceneSerializer::serializeLight(YAML::Emitter &out, const std::shared_ptr<Light> &light) {
+    out << YAML::BeginMap;
+    out << YAML::Key << "position" << YAML::Value << light->position;
+    out << YAML::Key << "color" << YAML::Value << light->color;
+    out << YAML::Key << "intensity" << YAML::Value << light->intensity;
+    out << YAML::EndMap;
+}
+
+void SceneSerializer::serializeSkybox(YAML::Emitter &out, SkyBox &skybox) {
+    out << YAML::BeginMap;
+    out << YAML::Key << "skyboxFolder" << YAML::Value << skybox.skyboxFolder;
+    out << YAML::EndMap;
+}
+
 void SceneSerializer::serialize(const std::string &filepath) {
     YAML::Emitter out;
 
@@ -141,14 +155,22 @@ void SceneSerializer::serialize(const std::string &filepath) {
     out << YAML::Key << "Materials" << YAML::Value << YAML::BeginSeq;
     for (std::pair<std::string, Material *> pair: MaterialsLibrary::getInstance().getMaterials()) {
         serializeMaterial(out, pair);
-        std::cout << "Serialize game object with name =" << pair.first << std::endl;
+        std::cout << "Serialize material with name =" << pair.first << std::endl;
     }
     out << YAML::EndSeq;
     out << YAML::Key << "Objects" << YAML::Value << YAML::BeginSeq;
     for (std::shared_ptr<Object> object: Scene::getInstance().getObjects()) {
-        serializeGameObject(out, object);
-        std::cout << "Serialize game object with name =" << object->name << std::endl;
+        serializeObject(out, object);
+        std::cout << "Serialize object with name =" << object->name << std::endl;
     }
+    out << YAML::EndSeq;
+    out << YAML::Key << "Light" << YAML::Value << YAML::BeginSeq;
+    serializeLight(out, Scene::getInstance().getLight());
+    std::cout << "Serialize light" << std::endl;
+    out << YAML::EndSeq;
+    out << YAML::Key << "Skybox" << YAML::Value << YAML::BeginSeq;
+    serializeSkybox(out, Scene::getInstance().getSkybox());
+    std::cout << "Serialize skybox" << std::endl;
     out << YAML::EndSeq;
     out << YAML::EndMap;
 
@@ -157,10 +179,10 @@ void SceneSerializer::serialize(const std::string &filepath) {
     fout.close();
 }
 
-static void deserializeGameObject(YAML::Node objectYAML, std::shared_ptr<Object> parent) {
+static void deserializeObject(YAML::Node objectYAML, const std::shared_ptr<Object> &parent) {
     std::string name = objectYAML["Name"].as<std::string>();
 
-    std::cout << "Deserialized game object with name = " << name << std::endl;
+    std::cout << "Deserialized object with name = " << name << std::endl;
     std::string meshFilePath = objectYAML["MeshName"].as<std::string>();
     glm::vec3 position = objectYAML["Position"].as<glm::vec3>();
     glm::vec3 rotation = objectYAML["Rotation"].as<glm::vec3>();
@@ -175,7 +197,7 @@ static void deserializeGameObject(YAML::Node objectYAML, std::shared_ptr<Object>
     auto childrenNode = objectYAML["Children"];
     for (auto childNodeYAML: childrenNode) {
         if (childrenNode) {
-            deserializeGameObject(childNodeYAML, Scene::getInstance().searchObjectByName(name));
+            deserializeObject(childNodeYAML, Scene::getInstance().searchObjectByName(name));
         }
     }
 }
@@ -183,7 +205,7 @@ static void deserializeGameObject(YAML::Node objectYAML, std::shared_ptr<Object>
 void SceneSerializer::deserializeMaterial(YAML::Node materialYAML) {
     std::string name = materialYAML["Name"].as<std::string>();
 
-    std::cout << "Deserialized game object with name = " << name << std::endl;
+    std::cout << "Deserialized object with name = " << name << std::endl;
     int id = materialYAML["ID"].as<int>();
     glm::vec3 color = materialYAML["color"].as<glm::vec3>();
     float shininess = materialYAML["shininess"].as<float>();
@@ -191,6 +213,20 @@ void SceneSerializer::deserializeMaterial(YAML::Node materialYAML) {
     GLuint transparent = materialYAML["transparent"].as<GLuint>();
     mgl::ShaderType shaderType = (mgl::ShaderType) (materialYAML["shaderType"].as<int>());
     MaterialsLibrary::getInstance().loadMaterial(id, name, color, shininess, reflectiveness, transparent, shaderType);
+}
+
+void SceneSerializer::deserializeLight(YAML::Node lightYAML) {
+    std::cout << "Deserialized light" << std::endl;
+    glm::vec3 position = lightYAML["position"].as<glm::vec3>();
+    glm::vec3 color = lightYAML["color"].as<glm::vec3>();
+    float intensity = lightYAML["intensity"].as<float>();
+    Scene::getInstance().createLight(position, color, intensity);
+}
+
+void SceneSerializer::deserializeSkybox(YAML::Node skyboxYAML) {
+    std::cout << "Deserialized skybox" << std::endl;
+    std::string skyboxFolder = skyboxYAML["skyboxFolder"].as<std::string>();
+    Scene::getInstance().getSkybox().loadCubeMap(skyboxFolder);
 }
 
 bool SceneSerializer::deserialize(const std::string &filepath) {
@@ -209,12 +245,26 @@ bool SceneSerializer::deserialize(const std::string &filepath) {
             deserializeMaterial(materialYAML);
         }
     }
-    std::cout << data.size() << std::endl;
+
     node = data["Objects"];
     Scene::getInstance().clear();
     if (node) {
-        for (YAML::Node gameObjectYAML: node) {
-            deserializeGameObject(gameObjectYAML, nullptr);
+        for (YAML::Node objectYAML: node) {
+            deserializeObject(objectYAML, nullptr);
+        }
+    }
+
+    node = data["Light"];
+    if (node) {
+        for (YAML::Node lightYAML: node) {
+            deserializeLight(lightYAML);
+        }
+    }
+
+    node = data["Skybox"];
+    if (node) {
+        for (YAML::Node skyboxYAML: node) {
+            deserializeSkybox(skyboxYAML);
         }
     }
 

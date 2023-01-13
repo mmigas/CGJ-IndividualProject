@@ -82,5 +82,9 @@ void Scene::clear() {
     objects.clear();
 }
 
+SkyBox &Scene::getSkybox() {
+    return skybox;
+}
+
 Scene Scene::instance;
 
