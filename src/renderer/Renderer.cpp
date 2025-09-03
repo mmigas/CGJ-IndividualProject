@@ -1,10 +1,9 @@
 #include "Renderer.hpp"
 
 Renderer::Renderer() : scene(Scene::getInstance()) {
-
 }
 
-void Renderer::init(GLFWwindow *win) {
+void Renderer::init(GLFWwindow* win) {
     this->win = win;
     scene.getSkybox().init();
     glGenBuffers(1, &materialsUBO);
@@ -25,12 +24,12 @@ void Renderer::createShaderPrograms() {
     createSkyBoxShaderProgram("resources/shaders/skybox-vs.glsl", "resources/shaders/skybox-fs.glsl");
 }
 
-void Renderer::loadSkyBox(const std::string &skyboxFolder) {
+void Renderer::loadSkyBox(const std::string& skyboxFolder) {
     scene.getSkybox().loadCubeMap(skyboxFolder);
 }
 
-void Renderer::createShaderProgram(mgl::ShaderType shaderType, const std::string &vertexShaderPath, const std::string &fragmentShaderPath) {
-    mgl::ShaderProgram *shaders = new mgl::ShaderProgram();
+void Renderer::createShaderProgram(mgl::ShaderType shaderType, const std::string& vertexShaderPath, const std::string& fragmentShaderPath) {
+    mgl::ShaderProgram* shaders = new mgl::ShaderProgram();
     shaders->addShader(GL_VERTEX_SHADER, vertexShaderPath);
     shaders->addShader(GL_FRAGMENT_SHADER, fragmentShaderPath);
 
@@ -49,8 +48,8 @@ void Renderer::createShaderProgram(mgl::ShaderType shaderType, const std::string
     shaderPrograms.insert(std::make_pair(shaderType, shaders));
 }
 
-void Renderer::createSkyBoxShaderProgram(const std::string &vertexShaderPath, const std::string &fragmentShaderPath) {
-    mgl::ShaderProgram *shaders = new mgl::ShaderProgram();
+void Renderer::createSkyBoxShaderProgram(const std::string& vertexShaderPath, const std::string& fragmentShaderPath) {
+    mgl::ShaderProgram* shaders = new mgl::ShaderProgram();
     shaders->addShader(GL_VERTEX_SHADER, vertexShaderPath);
     shaders->addShader(GL_FRAGMENT_SHADER, fragmentShaderPath);
     shaders->addUniform(mgl::SKYBOX);
@@ -78,15 +77,15 @@ void Renderer::drawObject(std::shared_ptr<Object> object) {
     shader->unbind();
 }
 
-void Renderer::drawChildren(std::shared_ptr<Object> parent) {
-    for (std::shared_ptr<Object> child: parent->getChildren()) {
+void Renderer::drawChildren(const std::shared_ptr<Object>& parent) {
+    for (const std::shared_ptr<Object>& child: parent->getChildren()) {
         drawChildren(child);
     }
     drawObject(parent);
 }
 
 void Renderer::drawScene() {
-    for (std::shared_ptr<Object> object: scene.getObjects()) {
+    for (const std::shared_ptr<Object>& object: scene.getObjects()) {
         drawChildren(object);
         drawObject(object);
     }
@@ -105,7 +104,6 @@ void Renderer::drawSkyBox() {
     glDepthFunc(GL_LESS);
 }
 
-FrameBuffer &Renderer::getFramebuffer() {
+FrameBuffer& Renderer::getFramebuffer() {
     return frameBuffer;
 }
-

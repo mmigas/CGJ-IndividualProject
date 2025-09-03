@@ -4,37 +4,36 @@
 #include "mglError.hpp"
 
 namespace mgl {
+    /////////////////////////////////////////////////////////////// STATIC CALLBACKS
 
-/////////////////////////////////////////////////////////////// STATIC CALLBACKS
-
-    static void window_close_callback(GLFWwindow *window) {
+    static void window_close_callback(GLFWwindow* window) {
         Engine::getInstance().getApp()->windowCloseCallback(window);
     }
 
-    static void window_size_callback(GLFWwindow *window, int width, int height) {
+    static void window_size_callback(GLFWwindow* window, int width, int height) {
         Engine::getInstance().getApp()->windowSizeCallback(window, width, height);
     }
 
-    static void glfw_error_callback(int error, const char *description) {
+    static void glfw_error_callback(int error, const char* description) {
         std::cerr << "GLFW Error: " << description << std::endl;
     }
 
-    static void cursor_pos_callback(GLFWwindow *window, double xpos, double ypos) {
+    static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
         Engine::getInstance().getApp()->cursorCallback(window, xpos, ypos);
     }
 
-    static void key_callback(GLFWwindow *window, int key, int scancode, int action,
+    static void key_callback(GLFWwindow* window, int key, int scancode, int action,
                              int mods) {
         Engine::getInstance().getApp()->keyCallback(window, key, scancode, action, mods);
     }
 
-    static void mouse_button_callback(GLFWwindow *window, int button, int action,
+    static void mouse_button_callback(GLFWwindow* window, int button, int action,
                                       int mods) {
         Engine::getInstance().getApp()->mouseButtonCallback(window, button, action,
                                                             mods);
     }
 
-    static void scroll_callback(GLFWwindow *window, double xoffset,
+    static void scroll_callback(GLFWwindow* window, double xoffset,
                                 double yoffset) {
         Engine::getInstance().getApp()->scrollCallback(window, xoffset, yoffset);
     }
@@ -43,7 +42,7 @@ namespace mgl {
         Engine::getInstance().getApp()->joystickCallback(jid, event);
     }
 
-////////////////////////////////////////////////////////////////////////// SETUP
+    ////////////////////////////////////////////////////////////////////////// SETUP
 
     Engine::Engine(void) {
         GlApp = 0;
@@ -57,16 +56,16 @@ namespace mgl {
     Engine::~Engine(void) {
     }
 
-    Engine &Engine::getInstance(void) {
+    Engine& Engine::getInstance(void) {
         static Engine instance;
         return instance;
     }
 
-    App *Engine::getApp(void) {
+    App* Engine::getApp(void) {
         return GlApp;
     }
 
-    void Engine::setApp(App *app) {
+    void Engine::setApp(App* app) {
         GlApp = app;
     }
 
@@ -75,7 +74,7 @@ namespace mgl {
         GlMinor = minor;
     }
 
-    void Engine::setWindow(int width, int height, const char *title, int fullscreen,
+    void Engine::setWindow(int width, int height, const char* title, int fullscreen,
                            int vsync) {
         WindowWidth = width;
         WindowHeight = height;
@@ -84,10 +83,10 @@ namespace mgl {
         Vsync = vsync;
     }
 
-/////////////////////////////////////////////////////////////////////////// INIT
+    /////////////////////////////////////////////////////////////////////////// INIT
 
     void Engine::setupWindow() {
-        GLFWmonitor *monitor = Fullscreen ? glfwGetPrimaryMonitor() : 0;
+        GLFWmonitor* monitor = Fullscreen ? glfwGetPrimaryMonitor() : 0;
         Window = glfwCreateWindow(WindowWidth, WindowHeight, WindowTitle, monitor, 0);
         if (!Window) {
             glfwTerminate();
@@ -137,10 +136,10 @@ namespace mgl {
 
     void displayInfo() {
         std::cerr << "OpenGL renderer: " << glGetString(GL_RENDERER) << " ("
-                  << glGetString(GL_VENDOR) << ")" << std::endl;
+                << glGetString(GL_VENDOR) << ")" << std::endl;
         std::cerr << "OpenGL version " << glGetString(GL_VERSION) << std::endl;
         std::cerr << "GLSL version " << glGetString(GL_SHADING_LANGUAGE_VERSION)
-                  << std::endl;
+                << std::endl;
         std::cout << "GLEW version " << glewGetString(GLEW_VERSION) << std::endl;
         std::cout << "GLFW version " << glfwGetVersionString() << std::endl;
         std::cout << GLM_VERSION_MESSAGE << std::endl;
@@ -170,7 +169,7 @@ namespace mgl {
 #endif
     }
 
-//////////////////////////////////////////////////////////////////////////// RUN
+    //////////////////////////////////////////////////////////////////////////// RUN
 
     void Engine::run() {
         double last_time = glfwGetTime();
@@ -178,7 +177,7 @@ namespace mgl {
             double time = glfwGetTime();
             double elapsed_time = time - last_time;
             last_time = time;
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             GlApp->displayCallback(Window, elapsed_time);
             glfwSwapBuffers(Window);
             glfwPollEvents();
@@ -187,5 +186,5 @@ namespace mgl {
         glfwTerminate();
     }
 
-////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
 } // namespace mgl

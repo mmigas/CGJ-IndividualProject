@@ -11,13 +11,16 @@ void FrameBuffer::init(uint32_t id, uint32_t width, uint32_t height) {
     }
     this->id = id;
     glGenFramebuffers(1, &this->id);
-    glViewport(0, 0, width, height);
+    bind();
+    attachDepthMap(width, height);
     attachColorTexture(width, height);
 }
 
 
 FrameBuffer::~FrameBuffer() {
     glDeleteFramebuffers(1, &this->id);
+    glDeleteTextures(1, &colorTexture);
+    glDeleteTextures(1, &depthMap);
 }
 
 void FrameBuffer::bind() {
@@ -37,7 +40,7 @@ void FrameBuffer::resize(uint32_t width, uint32_t height) {
 }
 
 void FrameBuffer::attachColorTexture(uint32_t width, uint32_t height) {
-    glBindFramebuffer(GL_FRAMEBUFFER, this->id);
+    //glBindFramebuffer(GL_FRAMEBUFFER, this->id);
     glGenTextures(1, &colorTexture);
     glBindTexture(GL_TEXTURE_2D, colorTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
@@ -53,16 +56,39 @@ void FrameBuffer::attachColorTexture(uint32_t width, uint32_t height) {
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
     }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void FrameBuffer::attachDepthMap(uint32_t width, uint32_t uint32) {
+    //glBindFramebuffer(GL_FRAMEBUFFER, this->id);
+    glGenTextures(1, &depthMap);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, uint32, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << glCheckFramebufferStatus(GL_FRAMEBUFFER) << std::endl;
+    }
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 uint32_t FrameBuffer::getColorAttachmentRenderer() {
     return colorTexture;
 }
 
+uint32_t FrameBuffer::getDepthAttachmentRenderer() {
+    return depthMap;
+}
 
 void FrameBuffer::clear() {
-    glClear(GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 uint32_t FrameBuffer::getID() {

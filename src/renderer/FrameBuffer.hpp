@@ -17,6 +17,7 @@ public:
 
     ~FrameBuffer();
 
+
     void init(uint32_t id, uint32_t width, uint32_t height);
 
     void bind();
@@ -27,10 +28,13 @@ public:
 
     uint32_t getColorAttachmentRenderer();
 
+    uint32_t getDepthAttachmentRenderer();
+
     void clear();
 
     void attachColorTexture(uint32_t width, uint32_t height);
 
+    void attachDepthMap(uint32_t width, uint32_t uint32);
 
     uint32_t getID();
 };

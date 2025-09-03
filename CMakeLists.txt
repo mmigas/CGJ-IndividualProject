@@ -39,53 +39,45 @@ if (WIN32) # WINDOWS
 endif ()
 
 # Define the libraries you want to include.
-# The `add_library` allows you to include libraries to your work.
-# The IMPORTED parameter defines the library as an external inclusion
-# The SHARED parameter defines the library as a dynamic library (.dll)
 add_library(yaml-cpp SHARED IMPORTED)
 add_library(GLEW SHARED IMPORTED)
 add_library(GLFW SHARED IMPORTED)
 add_library(Assimp SHARED IMPORTED)
 add_library(imgui STATIC IMPORTED)
 add_library(imguizmo STATIC IMPORTED)
-# ... add other libs ...
 
 if (WIN32) # WINDOWS
     # Tell CMake where to find the `.dll` and `.lib` file of the library
     set_target_properties(GLEW PROPERTIES
             IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLEW/bin/Release/x64/glew32.dll
             IMPORTED_IMPLIB ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLEW/lib/Release/x64/glew32.lib
-            )
+    )
 
     set_target_properties(GLFW PROPERTIES
             IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLFW/lib-vc2022/glfw3.dll
             IMPORTED_IMPLIB ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLFW/lib-vc2022/glfw3dll.lib
-            )
+    )
 
     set_target_properties(Assimp PROPERTIES
             IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/Assimp/bin/assimp-vc143-mtd.dll
             IMPORTED_IMPLIB ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/Assimp/lib/assimp-vc143-mtd.lib
-            )
+    )
 
     set_target_properties(imgui PROPERTIES
             IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imgui/lib/imgui.lib
-            )
+    )
 
     set_target_properties(imguizmo PROPERTIES
             IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imguizmo/lib/imGuizmo.lib
-            )
+    )
 
     set_target_properties(yaml-cpp PROPERTIES
             IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/yaml-cpp/bin/yaml-cppd.dll
             IMPORTED_IMPLIB ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/yaml-cpp/lib/yaml-cppd.lib
-            )
+    )
 
-    # ... add other libs ...
-else ()
-    # Define the properties for other OSes
 endif ()
 
-# To make it easier, we can create a variable holding all needed lib dependencies
 set(GRAPHIC_LIBRARIES
         GLFW
         GLEW
@@ -94,7 +86,8 @@ set(GRAPHIC_LIBRARIES
         imguizmo
         yaml-cpp
         ${OPENGL_LIBS}
-        )
+        opengl32.lib
+)
 
 
 add_executable(${PROJECT_NAME} src/mgl/mgl.hpp
@@ -141,7 +134,6 @@ add_executable(${PROJECT_NAME} src/mgl/mgl.hpp
 
 include_directories(
         ${OPENGL_INCLUDE_DIRS}
-        # Include the `.h` files into your code.
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLEW/include
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLFW/include
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glm/include
@@ -150,7 +142,6 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imgui/include
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imguizmo/include
         ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/yaml-cpp/include
-        # ... add other libs ...
 )
 # Link the libs with the executable
 target_link_libraries(${PROJECT_NAME}
@@ -164,12 +155,12 @@ add_custom_target(CopyLibs
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/Assimp/bin/assimp-vc143-mtd.dll ${LIBRARY_OUTPUT_PATH}
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/yaml-cpp/bin/yaml-cppd.dll ${LIBRARY_OUTPUT_PATH}
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imgui/ini/imgui.ini ${LIBRARY_OUTPUT_PATH}
-        )
+)
 
 add_custom_target(CopyResourcesFiles
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMAND ${CMAKE_COMMAND} -E echo Copying Resources files
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources ${EXECUTABLE_OUTPUT_PATH}/resources/
-        )
+)
 
 add_dependencies(${PROJECT_NAME} CopyLibs CopyResourcesFiles)
