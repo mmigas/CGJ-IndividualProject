@@ -1,35 +1,69 @@
 Materials:
-  - Name: light
+  - Name: Gray-Matte
     ID: 0
-    color: [0.899999976, 0.899999976, 0.899999976]
-    diffuse: [0.540000021, 0.540000021, 0.540000021]
-    specular: [0.270000011, 0.270000011, 0.270000011]
+    color: [0.3, 0.3, 0.3]
+    diffuse: [0.5, 0.5, 0.5]
+    specular: [0.5, 0.5, 0.5]
+    shininess: 4
+    reflectiveness: 0.05
+    transparent: 0
+    shaderType: 1
+
+  - Name: Gray-Satin
+    ID: 1
+    color: [0.3, 0.3, 0.3]
+    diffuse: [0.5, 0.5, 0.5]
+    specular: [0.5, 0.5, 0.5]
     shininess: 32
-    reflectiveness: 0.100000001
+    reflectiveness: 0.2
+    transparent: 0
+    shaderType: 1
+
+  - Name: Gray-Glossy
+    ID: 2
+    color: [0.3, 0.3, 0.3]
+    diffuse: [0.5, 0.5, 0.5]
+    specular: [0.8, 0.8, 0.8]
+    shininess: 256
+    reflectiveness: 0.6
+    transparent: 0
+    shaderType: 1
+
+  - Name: Gray-Polished
+    ID: 3
+    color: [0.3, 0.3, 0.3]
+    diffuse: [0.5, 0.5, 0.5]
+    specular: [0.9, 0.9, 0.9]
+    shininess: 1024
+    reflectiveness: 0.9
     transparent: 0
     shaderType: 1
 Objects:
   - Name: sphere1
     MeshName: Sphere.obj
-    Position: [2, 0, 0]
+    Position: [-3, 0, 0]
     Rotation: [0, 0, 0]
     Scale: [1, 1, 1]
-    MaterialID: 0
+    MaterialID: 0  # Rough-Plastic
   - Name: sphere2
     MeshName: Sphere.obj
-    Position: [0, 0, 0]
+    Position: [-1, 0, 0]
     Rotation: [0, 0, 0]
     Scale: [1, 1, 1]
-    MaterialID: 0
+    MaterialID: 1  # Smooth-Plastic
   - Name: sphere3
     MeshName: Sphere.obj
-    Position: [-2, 0, 0]
+    Position: [1, 0, 0]
     Rotation: [0, 0, 0]
     Scale: [1, 1, 1]
-    MaterialID: 0
+    MaterialID: 2  # Rough-Gold
+  - Name: sphere4
+    MeshName: Sphere.obj
+    Position: [3, 0, 0]
+    Rotation: [0, 0, 0]
+    Scale: [1, 1, 1]
+    MaterialID: 3  # Polished-Gold
 Light:
   - position: [0, 4, 0]
     color: [1, 1, 1]
-    intensity: 0.800000012
-Skybox:
-  - skyboxFolder: resources/textures/skybox/FishermansBastion
+    intensity: 2.800000012

@@ -10,10 +10,9 @@
 #include <yaml-cpp/yaml.h>
 
 namespace YAML {
-
     template<>
     struct convert<glm::vec2> {
-        static Node encode(const glm::vec2 &rhs) {
+        static Node encode(const glm::vec2& rhs) {
             Node node;
             node.push_back(rhs.x);
             node.push_back(rhs.y);
@@ -21,7 +20,7 @@ namespace YAML {
             return node;
         }
 
-        static bool decode(const Node &node, glm::vec2 &rhs) {
+        static bool decode(const Node& node, glm::vec2& rhs) {
             if (!node.IsSequence() || node.size() != 2)
                 return false;
 
@@ -33,7 +32,7 @@ namespace YAML {
 
     template<>
     struct convert<glm::vec3> {
-        static Node encode(const glm::vec3 &rhs) {
+        static Node encode(const glm::vec3& rhs) {
             Node node;
             node.push_back(rhs.x);
             node.push_back(rhs.y);
@@ -42,7 +41,7 @@ namespace YAML {
             return node;
         }
 
-        static bool decode(const Node &node, glm::vec3 &rhs) {
+        static bool decode(const Node& node, glm::vec3& rhs) {
             if (!node.IsSequence() || node.size() != 3)
                 return false;
 
@@ -55,7 +54,7 @@ namespace YAML {
 
     template<>
     struct convert<glm::vec4> {
-        static Node encode(const glm::vec4 &rhs) {
+        static Node encode(const glm::vec4& rhs) {
             Node node;
             node.push_back(rhs.x);
             node.push_back(rhs.y);
@@ -65,7 +64,7 @@ namespace YAML {
             return node;
         }
 
-        static bool decode(const Node &node, glm::vec4 &rhs) {
+        static bool decode(const Node& node, glm::vec4& rhs) {
             if (!node.IsSequence() || node.size() != 4)
                 return false;
 
@@ -76,28 +75,27 @@ namespace YAML {
             return true;
         }
     };
-
 }
 
-YAML::Emitter &operator<<(YAML::Emitter &out, const glm::vec2 &v) {
+YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& v) {
     out << YAML::Flow;
     out << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
     return out;
 }
 
-YAML::Emitter &operator<<(YAML::Emitter &out, const glm::vec3 &v) {
+YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& v) {
     out << YAML::Flow;
     out << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
     return out;
 }
 
-YAML::Emitter &operator<<(YAML::Emitter &out, const glm::vec4 &v) {
+YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& v) {
     out << YAML::Flow;
     out << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
     return out;
 }
 
-void SceneSerializer::serializeObject(YAML::Emitter &out, const std::shared_ptr<Object> &object) {
+void SceneSerializer::serializeObject(YAML::Emitter& out, const std::shared_ptr<Object>& object) {
     out << YAML::BeginMap;
     out << YAML::Key << "Name" << YAML::Value << object->name;
     std::string meshName = object->meshFilePath;
@@ -110,7 +108,7 @@ void SceneSerializer::serializeObject(YAML::Emitter &out, const std::shared_ptr<
 
     if (object->hasChildren()) {
         out << YAML::Key << "Children" << YAML::Value << YAML::BeginSeq;
-        for (auto &child: object->getChildren()) {
+        for (auto& child: object->getChildren()) {
             serializeObject(out, child);
         }
         out << YAML::EndSeq;
@@ -118,8 +116,8 @@ void SceneSerializer::serializeObject(YAML::Emitter &out, const std::shared_ptr<
     out << YAML::EndMap;
 }
 
-void SceneSerializer::serializeMaterial(YAML::Emitter &out, std::pair<std::string, Material *> &pair) {
-    Material *material = pair.second;
+void SceneSerializer::serializeMaterial(YAML::Emitter& out, std::pair<std::string, Material*>& pair) {
+    Material* material = pair.second;
     out << YAML::BeginMap;
     out << YAML::Key << "Name" << YAML::Value << pair.first;
     out << YAML::Key << "ID" << YAML::Value << material->id;
@@ -134,7 +132,7 @@ void SceneSerializer::serializeMaterial(YAML::Emitter &out, std::pair<std::strin
     out << YAML::EndMap;
 }
 
-void SceneSerializer::serializeLight(YAML::Emitter &out, const std::shared_ptr<Light> &light) {
+void SceneSerializer::serializeLight(YAML::Emitter& out, const std::shared_ptr<Light>& light) {
     out << YAML::BeginMap;
     out << YAML::Key << "position" << YAML::Value << light->position;
     out << YAML::Key << "color" << YAML::Value << light->color;
@@ -142,18 +140,18 @@ void SceneSerializer::serializeLight(YAML::Emitter &out, const std::shared_ptr<L
     out << YAML::EndMap;
 }
 
-void SceneSerializer::serializeSkybox(YAML::Emitter &out, SkyBox &skybox) {
+void SceneSerializer::serializeSkybox(YAML::Emitter& out, SkyBox& skybox) {
     out << YAML::BeginMap;
     out << YAML::Key << "skyboxFolder" << YAML::Value << skybox.skyboxFolder;
     out << YAML::EndMap;
 }
 
-void SceneSerializer::serialize(const std::string &filepath) {
+void SceneSerializer::serialize(const std::string& filepath) {
     YAML::Emitter out;
 
     out << YAML::BeginMap;
     out << YAML::Key << "Materials" << YAML::Value << YAML::BeginSeq;
-    for (std::pair<std::string, Material *> pair: MaterialsLibrary::getInstance().getMaterials()) {
+    for (std::pair<std::string, Material*> pair: MaterialsLibrary::getInstance().getMaterials()) {
         serializeMaterial(out, pair);
         std::cout << "Serialize material with name =" << pair.first << std::endl;
     }
@@ -179,7 +177,7 @@ void SceneSerializer::serialize(const std::string &filepath) {
     fout.close();
 }
 
-static void deserializeObject(YAML::Node objectYAML, const std::shared_ptr<Object> &parent) {
+static void deserializeObject(YAML::Node objectYAML, const std::shared_ptr<Object>& parent) {
     std::string name = objectYAML["Name"].as<std::string>();
 
     std::cout << "Deserialized object with name = " << name << std::endl;
@@ -211,7 +209,7 @@ void SceneSerializer::deserializeMaterial(YAML::Node materialYAML) {
     float shininess = materialYAML["shininess"].as<float>();
     float reflectiveness = materialYAML["reflectiveness"].as<float>();
     GLuint transparent = materialYAML["transparent"].as<GLuint>();
-    mgl::ShaderType shaderType = (mgl::ShaderType) (materialYAML["shaderType"].as<int>());
+    mgl::ShaderType shaderType = (mgl::ShaderType)(materialYAML["shaderType"].as<int>());
     MaterialsLibrary::getInstance().loadMaterial(id, name, color, shininess, reflectiveness, transparent, shaderType);
 }
 
@@ -227,14 +225,15 @@ void SceneSerializer::deserializeSkybox(YAML::Node skyboxYAML) {
     std::cout << "Deserialized skybox" << std::endl;
     std::string skyboxFolder = skyboxYAML["skyboxFolder"].as<std::string>();
     Scene::getInstance().getSkybox().loadCubeMap(skyboxFolder);
+    Scene::getInstance().m_hasSkybox = true;
+
 }
 
-bool SceneSerializer::deserialize(const std::string &filepath) {
+bool SceneSerializer::deserialize(const std::string& filepath) {
     YAML::Node data;
     try {
         data = YAML::LoadFile(filepath);
-    }
-    catch (YAML::Exception &e) {
+    } catch (YAML::Exception& e) {
         std::cout << "Failed to load .scene file " << filepath << ".\n      " << e.what() << std::endl;
         return false;
     }
@@ -266,6 +265,8 @@ bool SceneSerializer::deserialize(const std::string &filepath) {
         for (YAML::Node skyboxYAML: node) {
             deserializeSkybox(skyboxYAML);
         }
+    } else {
+        Scene::getInstance().removeSkybox();
     }
 
     return true;

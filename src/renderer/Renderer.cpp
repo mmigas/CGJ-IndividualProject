@@ -41,6 +41,7 @@ void Renderer::createShaderProgram(mgl::ShaderType shaderType, const std::string
     shaders->addUniform(mgl::MODEL_MATRIX);
     shaders->addUniform(mgl::CAMERA_POSITION);
     shaders->addUniform(mgl::SKYBOX);
+    shaders->addUniform(mgl::HAS_SKYBOX);
     shaders->addUniformBlock(mgl::CAMERA_BLOCK, mgl::CAMERA_BLOCK_BINDING_POINT);
     shaders->addUniformBlock(mgl::MATERIAL_BLOCK, mgl::MATERIAL_BLOCK_BINDING_POINT);
     shaders->addUniformBlock(mgl::LIGHT_BLOCK, mgl::LIGHT_BLOCK_BINDING_POINT);
@@ -59,7 +60,9 @@ void Renderer::createSkyBoxShaderProgram(const std::string& vertexShaderPath, co
 }
 
 void Renderer::draw() {
-    drawSkyBox();
+    if (Scene::getInstance().hasSkybox()) {
+        drawSkyBox();
+    }
     drawScene();
 }
 
@@ -72,6 +75,7 @@ void Renderer::drawObject(std::shared_ptr<Object> object) {
     glm::vec3 cameraPosition = Scene::getInstance().getCamera()->GetEye();
     glUniform3f(shader->Uniforms[mgl::CAMERA_POSITION].index, cameraPosition.x, cameraPosition.y, cameraPosition.z);
     glUniform1i(shader->Uniforms[mgl::SKYBOX].index, 0);
+    glUniform1i(shader->Uniforms[mgl::HAS_SKYBOX].index, Scene::getInstance().hasSkybox());
     glUniformMatrix4fv(shader->Uniforms[mgl::MODEL_MATRIX].index, 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));
     object->draw(materialsUBO);
     shader->unbind();

@@ -6,6 +6,7 @@ in vec3 exNormal;
 
 uniform vec3 CameraPosition;
 uniform samplerCube Skybox;
+uniform bool HasSkybox;
 
 uniform Material {
     vec3 color;
@@ -45,6 +46,10 @@ void main(void) {
     vec3 materialColor = ambient + diffuse + specular;
 
     //Environment map reflection
+    if(!HasSkybox) {
+        FragmentColor = vec4(materialColor, 1.0f);
+        return;
+    }
     vec3 I = normalize(exPosition - CameraPosition);
     vec3 R = reflect(I, normal);
     vec3 reflectionColor = texture(Skybox, R).rgb;

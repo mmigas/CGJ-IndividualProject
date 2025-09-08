@@ -1,57 +1,65 @@
 Materials:
-  - Name: unlit
-    ID: 1
-    color: [0, 1, 0]
-    diffuse: [0, 0.600000024, 0]
-    specular: [0, 0.300000012, 0]
-    shininess: 32
-    reflectiveness: 0.5
-    transparent: 1
-    shaderType: 0
-  - Name: light
+  - Name: Opaque
     ID: 0
-    color: [1, 0, 0]
-    diffuse: [0.600000024, 0, 0]
-    specular: [0.300000012, 0, 0]
+    color: [0, 0, 1]
+    diffuse: [0, 0, 0.8]
+    specular: [0.2, 0.2, 0.2]
     shininess: 32
-    reflectiveness: 0.5
+    reflectiveness: 0.0
+    transparent: 0
+    shaderType: 1
+  - Name: Mirror
+    ID: 1
+    color: [0.8, 0.8, 0.8]
+    diffuse: [0.0, 0.0, 0.0]
+    specular: [1.0, 1.0, 1.0]
+    shininess: 2048
+    reflectiveness: 1.0
+    transparent: 0
+    shaderType: 1
+  - Name: Crystal
+    ID: 2
+    color: [1.0, 0.8, 0.8] # Slight red tint
+    diffuse: [0.1, 0.1, 0.1]
+    specular: [1.0, 1.0, 1.0]
+    shininess: 1024
+    reflectiveness: 0.4
     transparent: 1
     shaderType: 1
-  - Name: opaque
-    ID: 2
-    color: [0, 0, 1]
-    diffuse: [0, 0, 0.600000024]
-    specular: [0, 0, 0.300000012]
-    shininess: 64
-    reflectiveness: 0.100000001
-    transparent: 0
-    shaderType: 0
+  - Name: Glass
+    ID: 3
+    color: [0.8, 1.0, 0.8] # Slight green tint
+    diffuse: [0.1, 0.1, 0.1]
+    specular: [0.8, 0.8, 0.8]
+    shininess: 512
+    reflectiveness: 0.1
+    transparent: 1
+    shaderType: 1
 Objects:
-  - Name: unlit
+  - Name: OpaqueObject
     MeshName: Square.obj
-    Position: [0, 0, 0]
+    Position: [-6, 0, 0]
     Rotation: [90, 0, 0]
-    Scale: [1, 1, 1]
-    MaterialID: 1
-  - Name: lit
-    MeshName: Square.obj
-    Position: [3, 0, 0]
-    Rotation: [90, 0, 0]
-    Scale: [1, 1, 1]
+    Scale: [1.5, 1.5, 1.5]
     MaterialID: 0
-    Children:
-      - Name: lit's child
-        MeshName: Square.obj
-        Position: [0, 3, 0]
-        Rotation: [90, 0, 0]
-        Scale: [1, 1, 1]
-        MaterialID: 0
-  - Name: opaque
+  - Name: MirrorObject
     MeshName: Square.obj
-    Position: [-3, 0, 0]
+    Position: [-2, 0, 0]
     Rotation: [90, 0, 0]
-    Scale: [1, 1, 1]
+    Scale: [1.5, 1.5, 1.5]
+    MaterialID: 1
+  - Name: CrystalObject
+    MeshName: Square.obj
+    Position: [2, 0, 0]
+    Rotation: [90, 0, 0]
+    Scale: [1.5, 1.5, 1.5]
     MaterialID: 2
+  - Name: GlassObject
+    MeshName: Square.obj
+    Position: [6, 0, 0]
+    Rotation: [90, 0, 0]
+    Scale: [1.5, 1.5, 1.5]
+    MaterialID: 3
 Light:
   - position: [0, 0, -8]
     color: [1, 1, 1]

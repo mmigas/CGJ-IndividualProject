@@ -12,8 +12,7 @@
 #include <string>
 
 namespace mgl {
-
-////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
 
     const std::string MODEL_MATRIX = "ModelMatrix";
     const std::string NORMAL_MATRIX = "NormalMatrix";
@@ -25,6 +24,7 @@ namespace mgl {
     const std::string LIGHT_BLOCK = "Light";
     const std::string CAMERA_POSITION = "CameraPosition";
     const std::string SKYBOX = "Skybox";
+    const std::string HAS_SKYBOX = "HasSkybox";
 
     const int CAMERA_BLOCK_BINDING_POINT = 1;
     const int MATERIAL_BLOCK_BINDING_POINT = 2;
@@ -40,7 +40,7 @@ namespace mgl {
         unlit, light, skybox
     };
 
-////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
 } // namespace mgl
 
 #endif /* MGL_CONVENTIONS_HPP */
